@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay — Chuka Luhya Community</title>
+<link rel="style.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
+  <div class="brand"><strong>Chuka Luhya Community</strong><span>Registration &amp; subscription payment</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="search.html">Find a member</a>
+    <a href="welfare.html">Welfare</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Submit your payment</h1>
+  <p>Send money via M-Pesa to <b>0118665120</b>, then paste the confirmation message below. An admin will verify and activate you shortly.</p>
+
+  <div class="panel">
+    <form id="payForm">
+      <label>Your member number</label>
+      <input type="text" id="memberId" placeholder="e.g. CHLU0001" required>
+
+      <label>What are you paying for?</label>
+      <select id="type" required>
+        <option value="Registration">Registration fee — KSh 120 (one-time)</option>
+        <option value="Subscription">Semester subscription — KSh 50</option>
+      </select>
+
+      <div id="semesterWrap" style="display:none;">
+        <label>Which semester is this subscription for?</label>
+        <select id="semesterId"></select>
+      </div>
+
+      <label>Your phone number <span class="opt">(the one M-Pesa was sent from)</span></label>
+      <input type="tel" id="phone" placeholder="07XX XXX XXX">
+
+      <label>Paste your M-Pesa confirmation message</label>
+      <textarea id="transactionMessage" rows="4" placeholder="e.g. QGH7XXXX Confirmed. Ksh120.00 sent to..." required></textarea>
+
+      <div class="fee-box">Send to: <b>0118665120</b> (Registration KSh 120 · Subscription KSh 50)</div>
+
+      <button type="submit" id="submitBtn">Submit payment</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</main>
+
+<footer>Chuka Luhya Community · Send to 0118665120</footer>
+
+<script src="config.js"></script>
+<script>
+  const typeSelect = document.getElementById('type');
+  const semesterWrap = document.getElementById('semesterWrap');
+  const semesterSelect = document.getElementById('semesterId');
+
+  async function loadSemesters() {
+    const res = await callApi('getSemesters');
+    if (res.ok) {
+      semesterSelect.innerHTML = '';
+      res.semesters.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.semesterId; o.textContent = s.name;
+        semesterSelect.appendChild(o);
+      });
+    }
+  }
+  loadSemesters();
+
+  // pre-select semester if arriving via a shared link, e.g. payment.html?semester=SEM-123
+  const urlParams = new URLSearchParams(window.location.search);
+  const presetSemester = urlParams.get('semester');
+  if (presetSemester) { typeSelect.value = 'Subscription'; }
+
+  function toggleSemester() {
+    semesterWrap.style.display = typeSelect.value === 'Subscription' ? 'block' : 'none';
+  }
+  typeSelect.addEventListener('change', toggleSemester);
+  toggleSemester();
+
+  const form = document.getElementById('payForm');
+  const msg = document.getElementById('msg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    try {
+      const payload = {
+        memberId: document.getElementById('memberId').value.trim(),
+        type: typeSelect.value,
+        semesterId: typeSelect.value === 'Subscription' ? semesterSelect.value : '',
+        phone: document.getElementById('phone').value.trim(),
+        transactionMessage: document.getElementById('transactionMessage').value.trim()
+      };
+      const res = await callApi('submitPayment', payload);
+      if (res.ok) {
+        showMsg(res.message, true);
+        form.reset();
+        toggleSemester();
+      } else {
+        showMsg(res.error || 'Something went wrong.', false);
+      }
+    } catch (err) {
+      showMsg('Network error: ' + err.message, false);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit payment';
+    }
+  });
+</script>
+</body>
+</html>
