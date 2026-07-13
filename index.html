@@ -7,99 +7,112 @@
 <style>
 /* ==========================================================
    CHUKA LUHYA COMMUNITY — visual identity
-   Palette draws from shamba green (maize/farming, the welfare
-   drives) and beadwork gold/maroon (Luhya ceremonial beadwork).
+   "Engineering blueprint" theme — grid-paper navy background,
+   copper accent, spec-sheet numbered sections, mono labels.
+   Variable/selector names are kept from the previous theme so
+   no markup or JS needs to change — only what they resolve to.
    ========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --soil:      #1F3A2E;   /* deep shamba green */
-  --soil-dark: #14261D;
-  --cream:     #FBF6EC;
-  --gold:      #D9A441;   /* beadwork gold */
-  --maroon:    #8C2F1E;   /* beadwork maroon */
-  --ink:       #1B1B18;
-  --muted:     #6B6E64;
-  --line:      #E2DACB;
-  --ok:        #2F6B3E;
-  --warn:      #B5451B;
-  --radius:    10px;
-  --shadow:    0 6px 24px rgba(20,38,29,0.12);
+  --soil:      #10243E;   /* blueprint navy — brand / header / hero surfaces */
+  --soil-dark: #0B1B2B;   /* deep ink navy — used for high-contrast text on copper */
+  --cream:     #10243E;   /* page background (blueprint navy) */
+  --gold:      #C97B3D;   /* copper — primary accent */
+  --maroon:    #B5672E;   /* darker copper — links, buttons, hover states */
+  --ink:       #E8EEF2;   /* paper — default text color on the dark background */
+  --muted:     rgba(232,238,242,0.65);
+  --line:      rgba(232,238,242,0.25);
+  --blueprint-line: #4C86AE;
+  --ok:        #3F8F5F;
+  --warn:      #B4453A;
+  --radius:    0px;       /* blueprint style = sharp corners, no rounding */
+  --shadow:    none;      /* thin borders replace drop-shadows */
+  --wash:      rgba(232,238,242,0.04);   /* faint paper wash for card surfaces */
+  --wash-2:    rgba(232,238,242,0.07);
 }
 
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
   margin:0;
-  font-family:'Work Sans', sans-serif;
-  background:var(--cream);
+  font-family:'IBM Plex Sans', sans-serif;
+  background:
+    repeating-linear-gradient(0deg, rgba(76,134,174,0.14) 0px, rgba(76,134,174,0.14) 1px, transparent 1px, transparent 32px),
+    repeating-linear-gradient(90deg, rgba(76,134,174,0.14) 0px, rgba(76,134,174,0.14) 1px, transparent 1px, transparent 32px),
+    var(--cream);
   color:var(--ink);
   line-height:1.5;
 }
 h1,h2,h3,.display{
-  font-family:'Fraunces', serif;
-  font-weight:600;
+  font-family:'Space Grotesk', sans-serif;
+  font-weight:700;
   letter-spacing:-0.01em;
   margin:0 0 0.4em 0;
-  color:var(--soil-dark);
+  color:var(--ink);
 }
 p{margin:0 0 1em 0;}
-a{color:var(--maroon);}
+a{color:var(--gold);}
 
-/* beadwork divider — repeating diamond pattern, the signature element */
+/* blueprint divider — dashed tick-mark rule, the signature element */
 .beadline{
-  height:10px;
-  background-image:
-    linear-gradient(45deg, var(--gold) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--gold) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--maroon) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--maroon) 75%);
-  background-size:14px 14px;
-  background-position:0 0, 0 7px, 7px -7px, -7px 0;
-  opacity:0.9;
+  height:2px;
+  background-image:repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 10px, transparent 10px, transparent 22px);
+  opacity:0.85;
 }
 
 /* ---- layout shells ---- */
 header.site{
-  background:var(--soil);
-  color:var(--cream);
+  background:rgba(16,36,62,0.92);
+  color:var(--ink);
   padding:18px 24px;
   display:flex;
   align-items:center;
   gap:14px;
+  border-bottom:1px solid var(--line);
 }
-header.site img.logo{height:42px;width:42px;object-fit:contain;border-radius:8px;background:var(--cream);padding:4px;}
+header.site img.logo{height:42px;width:42px;object-fit:contain;border:1px solid var(--line);background:var(--ink);padding:4px;}
 header.site .brand{display:flex;flex-direction:column;}
-header.site .brand strong{font-family:'Fraunces',serif;font-size:1.15rem;}
-header.site .brand span{font-size:0.78rem;color:#CFE0D3;}
+header.site .brand strong{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:0.02em;}
+header.site .brand span{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--blueprint-line);}
 header.site nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;}
-header.site nav a{color:#EFE6D2;text-decoration:none;font-size:0.92rem;font-weight:500;}
+header.site nav a{
+  color:rgba(232,238,242,0.8);
+  text-decoration:none;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  font-weight:500;
+}
 header.site nav a:hover{color:var(--gold);}
 
 main{max-width:760px;margin:0 auto;padding:40px 20px 80px;}
 main.wide{max-width:1080px;}
 
 .hero{
-  background:var(--soil);
-  color:var(--cream);
+  background:rgba(232,238,242,0.03);
+  color:var(--ink);
   padding:56px 24px;
   text-align:center;
+  border-bottom:1px solid var(--line);
 }
-.hero h1{color:var(--cream);font-size:2.2rem;}
-.hero p{color:#D9E6DC;max-width:520px;margin:0 auto 22px;}
+.hero h1{color:var(--ink);font-size:2.2rem;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero p{color:var(--muted);max-width:520px;margin:0 auto 22px;}
 
 .grid-cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:16px;
   max-width:1080px;
-  margin:-34px auto 0;
+  margin:24px auto 0;
   padding:0 20px;
   position:relative;
 }
 .card{
-  background:#fff;
+  background:var(--wash);
   border:1px solid var(--line);
   border-radius:var(--radius);
   padding:22px;
@@ -107,95 +120,173 @@ main.wide{max-width:1080px;}
   text-decoration:none;
   color:var(--ink);
   display:block;
-  transition:transform .15s ease;
+  transition:border-color .15s ease, background .15s ease;
 }
-.card:hover{transform:translateY(-3px);}
-.card .eyebrow{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--maroon);font-weight:600;}
+.card:hover{border-color:var(--gold);background:var(--wash-2);}
+.card .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);font-weight:600;}
 .card h3{margin:6px 0 6px;font-size:1.15rem;}
 .card p{color:var(--muted);font-size:0.92rem;margin:0;}
 
+/* ---- spec-sheet section headers (numbered, like an engineering doc) ---- */
+.section-head{
+  display:flex;
+  align-items:baseline;
+  gap:16px;
+  margin:0 0 24px;
+  border-bottom:1px solid var(--line);
+  padding-bottom:16px;
+}
+.section-head .sheet-no{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.8rem;
+  color:var(--gold);
+  flex-shrink:0;
+}
+.section-head h2{margin:0;font-size:1.3rem;}
+
 /* ---- forms ---- */
 .panel{
-  background:#fff;
+  background:var(--wash);
   border:1px solid var(--line);
   border-radius:var(--radius);
   padding:28px;
   box-shadow:var(--shadow);
 }
-label{display:block;font-weight:600;font-size:0.88rem;margin:16px 0 6px;color:var(--soil-dark);}
-label .opt{font-weight:400;color:var(--muted);font-size:0.8rem;}
+label{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:500;
+  font-size:0.72rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin:16px 0 6px;
+  color:var(--blueprint-line);
+}
+label .opt{font-weight:400;color:var(--muted);font-size:0.75rem;text-transform:none;letter-spacing:0;}
 input[type=text],input[type=email],input[type=number],input[type=tel],input[type=password],select,textarea{
   width:100%;
   padding:11px 12px;
   border:1px solid var(--line);
-  border-radius:8px;
+  border-radius:var(--radius);
   font-size:0.95rem;
   font-family:inherit;
-  background:#FEFDFB;
+  background:rgba(232,238,242,0.05);
+  color:var(--ink);
 }
+input::placeholder,textarea::placeholder{color:rgba(232,238,242,0.35);}
+select option{background:var(--soil-dark);color:var(--ink);}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
 input[type=file]{padding:8px 0;}
 
 button, .btn{
   display:inline-block;
-  background:var(--maroon);
-  color:#fff;
+  background:var(--gold);
+  color:var(--soil-dark);
   border:none;
+  border-radius:var(--radius);
   padding:13px 22px;
-  border-radius:8px;
   font-weight:600;
-  font-size:0.95rem;
+  font-size:0.85rem;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
   cursor:pointer;
-  font-family:inherit;
   text-decoration:none;
   margin-top:20px;
+  transition:filter .15s ease, transform .1s ease;
 }
-button:hover,.btn:hover{background:#701F13;}
-button.secondary,.btn.secondary{background:var(--soil);}
-button.secondary:hover{background:var(--soil-dark);}
-button:disabled{opacity:0.55;cursor:not-allowed;}
+button:hover,.btn:hover{filter:brightness(1.1);}
+button:active,.btn:active{transform:translateY(1px);}
+button.secondary,.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--gold);}
+button.secondary:hover,.btn.secondary:hover{background:rgba(201,123,61,0.12);filter:none;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
 
 .fee-box{
-  background:#F4EEDD;
+  background:rgba(201,123,61,0.08);
   border:1px dashed var(--gold);
-  border-radius:8px;
+  border-radius:var(--radius);
   padding:14px 16px;
   font-size:0.9rem;
   margin-top:18px;
 }
-.fee-box b{color:var(--maroon);}
+.fee-box b{color:var(--gold);}
 
-.msg{padding:12px 14px;border-radius:8px;font-size:0.9rem;margin-top:16px;display:none;}
+.msg{padding:12px 14px;border-radius:var(--radius);font-size:0.9rem;margin-top:16px;display:none;border:1px solid transparent;}
 .msg.show{display:block;}
-.msg.ok{background:#E6F1E7;color:var(--ok);border:1px solid #BEDBC2;}
-.msg.err{background:#FBE6E0;color:var(--warn);border:1px solid #F1C3B2;}
+.msg.ok{background:rgba(63,143,95,0.12);color:var(--ok);border-color:rgba(63,143,95,0.4);}
+.msg.err{background:rgba(180,69,58,0.12);color:var(--warn);border-color:rgba(180,69,58,0.4);}
 
 table{width:100%;border-collapse:collapse;font-size:0.9rem;margin-top:14px;}
 th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);}
-th{color:var(--soil-dark);font-family:'Fraunces',serif;font-weight:600;}
-.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:0.75rem;font-weight:600;}
-.tag.pending{background:#FBEFD6;color:#8A6203;}
-.tag.approved,.tag.active{background:#E1F0E3;color:var(--ok);}
-.tag.rejected{background:#FBE6E0;color:var(--warn);}
+th{
+  color:var(--gold);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:0.72rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.tag{
+  display:inline-block;
+  padding:2px 9px;
+  border-radius:var(--radius);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  font-weight:600;
+  border:1px solid currentColor;
+}
+.tag.pending{color:#D9A441;}
+.tag.approved,.tag.active{color:var(--ok);}
+.tag.rejected{color:var(--warn);}
 
 .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
-.tabs button{margin:0;background:#fff;color:var(--soil-dark);border:1px solid var(--line);}
-.tabs button.active{background:var(--soil);color:#fff;border-color:var(--soil);}
+.tabs button{
+  margin:0;
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--line);
+}
+.tabs button.active{background:var(--gold);color:var(--soil-dark);border-color:var(--gold);}
 
 .member-id{
-  font-family:'Fraunces',serif;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
   font-size:1.6rem;
-  color:var(--maroon);
+  color:var(--gold);
   letter-spacing:0.03em;
 }
 
 .share-link{
-  display:flex;gap:8px;align-items:center;background:#F4EEDD;border-radius:8px;padding:10px 12px;margin-top:8px;
+  display:flex;gap:8px;align-items:center;background:rgba(232,238,242,0.05);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;margin-top:8px;
 }
-.share-link input{background:transparent;border:none;flex:1;font-size:0.85rem;}
-.share-link button{margin:0;padding:8px 14px;font-size:0.82rem;}
+.share-link input{background:transparent;border:none;flex:1;font-size:0.85rem;color:var(--ink);}
+.share-link button{margin:0;padding:8px 14px;font-size:0.72rem;}
 
-footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 50px;}
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.75rem;
+  padding:28px 20px 50px;
+  border-top:1px solid var(--line);
+}
+
+/* status badges (used for member/account status, mirrors reference dashboard) */
+.status-badge{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border:1px solid currentColor;
+  margin-left:10px;
+  vertical-align:middle;
+}
+.status-badge.status-active,.status-badge.active{color:var(--ok);}
+.status-badge.status-inactive,.status-badge.inactive{color:var(--warn);}
 
 /* ---- registration stat charts (homepage) ---- */
 .stats-wrap{
@@ -205,7 +296,7 @@ footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 
   margin-top:18px;
 }
 .chart-card h3{font-size:1.02rem;margin-bottom:2px;}
-.chart-card .chart-sub{color:var(--muted);font-size:0.82rem;margin-bottom:16px;}
+.chart-card .chart-sub{color:var(--muted);font-size:0.82rem;margin-bottom:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.02em;}
 .bar-row{margin-bottom:14px;}
 .bar-row:last-child{margin-bottom:0;}
 .bar-row .bar-top{
@@ -215,24 +306,31 @@ footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 
   font-size:0.85rem;
   margin-bottom:4px;
 }
-.bar-row .bar-top .bar-name{font-weight:600;color:var(--soil-dark);}
-.bar-row .bar-top .bar-count{color:var(--maroon);font-weight:700;font-family:'Fraunces',serif;}
+.bar-row .bar-top .bar-name{font-weight:600;color:var(--ink);}
+.bar-row .bar-top .bar-count{color:var(--gold);font-weight:700;font-family:'Space Grotesk',sans-serif;}
 .bar-track{
-  height:12px;
-  background:#F0EADA;
-  border-radius:99px;
+  height:10px;
+  background:rgba(232,238,242,0.08);
+  border-radius:var(--radius);
   overflow:hidden;
   border:1px solid var(--line);
 }
 .bar-fill{
   height:100%;
-  border-radius:99px;
-  background:linear-gradient(90deg, var(--soil) 0%, var(--gold) 100%);
+  border-radius:var(--radius);
+  background:linear-gradient(90deg, var(--blueprint-line) 0%, var(--gold) 100%);
   width:0%;
   transition:width .6s ease;
 }
 .chart-card .bar-fill.alt{background:linear-gradient(90deg, var(--maroon) 0%, var(--gold) 100%);}
 .chart-loading,.chart-empty{color:var(--muted);font-size:0.88rem;}
+
+.empty-state{
+  padding:40px 24px;
+  text-align:center;
+  border:1px dashed var(--line);
+}
+.empty-state p{color:var(--muted);margin-top:8px;}
 
 @media(max-width:640px){
   header.site{flex-wrap:wrap;}
@@ -259,6 +357,7 @@ footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 
 </header>
 
 <div class="hero">
+  <p class="eyebrow" style="margin-bottom:8px;">Member Portal</p>
   <h1>Welcome home, mwana.</h1>
   <p>The official membership home for Luhya students at Chuka University — register, pay your dues, and support each other's welfare drives, all in one place.</p>
 </div>
@@ -288,7 +387,10 @@ footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 
 </div>
 
 <main>
-  <h2>How it works</h2>
+  <div class="section-head">
+    <span class="sheet-no">01</span>
+    <h2>How it works</h2>
+  </div>
   <p>1. <b>Register</b> once with your details and photo — you'll get a unique member number.</p>
   <p>2. <b>Pay</b> the KSh 120 registration fee to <b>0118665120</b>, then paste your M-Pesa confirmation message on the Pay page. An admin reviews and activates you.</p>
   <p>3. Each new semester, pay the <b>KSh 50</b> subscription the same way to stay active.</p>
@@ -298,7 +400,10 @@ footer{text-align:center;color:var(--muted);font-size:0.82rem;padding:30px 20px 
 <div class="beadline"></div>
 
 <main class="wide">
-  <h2>Community at a glance</h2>
+  <div class="section-head">
+    <span class="sheet-no">02</span>
+    <h2>Community at a glance</h2>
+  </div>
   <p>How the Chuka Luhya Community has grown — live counts pulled straight from the membership register.</p>
 
   <div class="stats-wrap">
@@ -323,7 +428,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyvl1aG-JSTuhmmTTJpNLwk
 
 // ⚠️ REPLACE THIS with a direct image URL for your logo (e.g. an Imgur link,
 // a GitHub-hosted image raw URL, or any public image link ending in .png/.jpg)
-const LOGO_URL = "https://drive.google.com/file/d/1XwN-2GqsNcrvXHtq5Wz5wxiwcrYzxigq/view?usp=sharing";
+const LOGO_URL = "https://lh3.googleusercontent.com/d/1XwN-2GqsNcrvXHtq5Wz5wxiwcrYzxigq";
 
 // Sets the logo on every page — called automatically below.
 // Stays hidden until a real LOGO_URL is set, so no broken-image icon shows.
