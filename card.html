@@ -113,6 +113,28 @@ a{color:var(--gold);}
 }
 .card-grid .kv b{font-size:0.88rem;font-weight:600;}
 
+/* ---- unique per-member QR code ---- */
+.card-qr{
+  border-top:1px dashed rgba(232,238,242,0.25);
+  padding:18px 24px;
+  display:flex;align-items:center;gap:16px;
+  position:relative;
+}
+.card-qr img.qr-img{
+  width:80px;height:80px;
+  background:#fff;
+  padding:6px;
+  border:1px solid var(--gold);
+  flex-shrink:0;
+  display:block;
+}
+.card-qr .qr-label{
+  font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+}
+.card-qr .qr-id{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;color:var(--gold);}
+.card-qr .qr-hint{font-size:0.72rem;color:var(--muted);margin-top:4px;line-height:1.4;}
+
 .card-bottom{
   border-top:1px dashed rgba(232,238,242,0.25);
   padding:14px 20px;
@@ -204,6 +226,14 @@ const member = {
   photo:  qs('photo')
 };
 
+// Builds a QR code image URL that is unique to this member — it encodes
+// this exact card's verification link (full URL, including query params),
+// so every member's QR points only to their own card.
+function buildQrSrc(verifyUrl) {
+  const data = encodeURIComponent(verifyUrl);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&qzone=1&data=${data}`;
+}
+
 function renderCard() {
   const wrap = document.getElementById('cardWrap');
 
@@ -221,6 +251,10 @@ function renderCard() {
   const statusTag = member.status === 'active'
     ? '<span class="tag active">Active</span>'
     : '<span class="tag inactive">' + escapeHtml(member.status || 'Pending') + '</span>';
+
+  // Fully-qualified, absolute URL for this specific card — this is what gets encoded.
+  const verifyUrl = window.location.href;
+  const qrSrc = buildQrSrc(verifyUrl);
 
   wrap.innerHTML = `
     <div id="cardCapture">
@@ -243,6 +277,14 @@ function renderCard() {
           <div class="kv"><span>Home county</span><b>${escapeHtml(member.county || '—')}</b></div>
           <div class="kv"><span>Hostel</span><b>${escapeHtml(member.hostel || '—')}</b></div>
           <div class="kv"><span>Member since</span><b>${escapeHtml(member.since || '—')}</b></div>
+        </div>
+      </div>
+      <div class="card-qr">
+        <img class="qr-img" src="${qrSrc}" alt="QR code for ${escapeHtml(member.name || 'member')}" crossorigin="anonymous">
+        <div>
+          <div class="qr-label">Scan to verify</div>
+          <div class="qr-id">${escapeHtml(member.id || '—')}</div>
+          <div class="qr-hint">Unique to this member — scanning opens this exact card.</div>
         </div>
       </div>
       <div class="card-bottom">
@@ -281,7 +323,7 @@ document.getElementById('copyBtn')?.addEventListener('click', async () => {
 
 document.getElementById('downloadBtn')?.addEventListener('click', async () => {
   const el = document.getElementById('cardCapture');
-  const canvas = await html2canvas(el, { backgroundColor: null, scale: 2, useCORS: true });
+  const canvas = await html2canvas(el, { backgroundColor: null, scale: 2, useCORS: true, allowTaint: false });
   const link = document.createElement('a');
   link.download = `${(member.id || 'clc-member')}-card.png`;
   link.href = canvas.toDataURL('image/png');
