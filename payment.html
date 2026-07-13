@@ -9,27 +9,25 @@
    CHUKA LUHYA COMMUNITY — visual identity
    "Engineering blueprint" theme — grid-paper navy background,
    copper accent, spec-sheet numbered sections, mono labels.
-   Variable/selector names are kept from the previous theme so
-   no markup or JS needs to change — only what they resolve to.
    ========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --soil:      #10243E;   /* blueprint navy — brand / header / hero surfaces */
-  --soil-dark: #0B1B2B;   /* deep ink navy — used for high-contrast text on copper */
-  --cream:     #10243E;   /* page background (blueprint navy) */
-  --gold:      #C97B3D;   /* copper — primary accent */
-  --maroon:    #B5672E;   /* darker copper — links, buttons, hover states */
-  --ink:       #E8EEF2;   /* paper — default text color on the dark background */
+  --soil:      #10243E;
+  --soil-dark: #0B1B2B;
+  --cream:     #10243E;
+  --gold:      #C97B3D;
+  --maroon:    #B5672E;
+  --ink:       #E8EEF2;
   --muted:     rgba(232,238,242,0.65);
   --line:      rgba(232,238,242,0.25);
   --blueprint-line: #4C86AE;
   --ok:        #3F8F5F;
   --warn:      #B4453A;
-  --radius:    0px;       /* blueprint style = sharp corners, no rounding */
-  --shadow:    none;      /* thin borders replace drop-shadows */
-  --wash:      rgba(232,238,242,0.04);   /* faint paper wash for card surfaces */
+  --radius:    0px;
+  --shadow:    none;
+  --wash:      rgba(232,238,242,0.04);
   --wash-2:    rgba(232,238,242,0.07);
 }
 
@@ -55,14 +53,12 @@ h1,h2,h3,.display{
 p{margin:0 0 1em 0;}
 a{color:var(--gold);}
 
-/* blueprint divider — dashed tick-mark rule, the signature element */
 .beadline{
   height:2px;
   background-image:repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 10px, transparent 10px, transparent 22px);
   opacity:0.85;
 }
 
-/* ---- layout shells ---- */
 header.site{
   background:rgba(16,36,62,0.92);
   color:var(--ink);
@@ -87,6 +83,7 @@ header.site nav a{
   font-weight:500;
 }
 header.site nav a:hover{color:var(--gold);}
+header.site nav a.hi{color:var(--gold);}
 
 main{max-width:760px;margin:0 auto;padding:40px 20px 80px;}
 main.wide{max-width:1080px;}
@@ -127,7 +124,6 @@ main.wide{max-width:1080px;}
 .card h3{margin:6px 0 6px;font-size:1.15rem;}
 .card p{color:var(--muted);font-size:0.92rem;margin:0;}
 
-/* ---- spec-sheet section headers (numbered, like an engineering doc) ---- */
 .section-head{
   display:flex;
   align-items:baseline;
@@ -144,7 +140,6 @@ main.wide{max-width:1080px;}
 }
 .section-head h2{margin:0;font-size:1.3rem;}
 
-/* ---- forms ---- */
 .panel{
   background:var(--wash);
   border:1px solid var(--line);
@@ -163,7 +158,7 @@ label{
   color:var(--blueprint-line);
 }
 label .opt{font-weight:400;color:var(--muted);font-size:0.75rem;text-transform:none;letter-spacing:0;}
-input[type=text],input[type=email],input[type=number],input[type=tel],input[type=password],select,textarea{
+input[type=text],input[type=email],input[type=number],input[type=tel],input[type=password],input[type=date],select,textarea{
   width:100%;
   padding:11px 12px;
   border:1px solid var(--line);
@@ -199,7 +194,10 @@ button:hover,.btn:hover{filter:brightness(1.1);}
 button:active,.btn:active{transform:translateY(1px);}
 button.secondary,.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--gold);}
 button.secondary:hover,.btn.secondary:hover{background:rgba(201,123,61,0.12);filter:none;}
+button.danger,.btn.danger{background:transparent;color:var(--warn);border:1px solid var(--warn);}
+button.danger:hover{background:rgba(180,69,58,0.12);}
 button:disabled{opacity:0.5;cursor:not-allowed;}
+button.small,.btn.small{padding:7px 12px;font-size:0.72rem;margin:0;}
 
 .fee-box{
   background:rgba(201,123,61,0.08);
@@ -239,7 +237,7 @@ th{
 }
 .tag.pending{color:#D9A441;}
 .tag.approved,.tag.active{color:var(--ok);}
-.tag.rejected{color:var(--warn);}
+.tag.rejected,.tag.inactive{color:var(--warn);}
 
 .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
 .tabs button{
@@ -273,7 +271,6 @@ footer{
   border-top:1px solid var(--line);
 }
 
-/* status badges (used for member/account status, mirrors reference dashboard) */
 .status-badge{
   display:inline-block;
   font-family:'IBM Plex Mono',monospace;
@@ -288,7 +285,6 @@ footer{
 .status-badge.status-active,.status-badge.active{color:var(--ok);}
 .status-badge.status-inactive,.status-badge.inactive{color:var(--warn);}
 
-/* ---- registration stat charts (homepage) ---- */
 .stats-wrap{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -332,11 +328,97 @@ footer{
 }
 .empty-state p{color:var(--muted);margin-top:8px;}
 
+/* ---- NEW: member directory grid (search page) ---- */
+.filter-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+.filter-row > div{flex:1;min-width:160px;}
+.member-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+.member-card{
+  background:var(--wash);
+  border:1px solid var(--line);
+  padding:16px;
+  text-align:center;
+}
+.member-card img,.member-card .avatar-fallback{
+  width:76px;height:76px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--gold);
+  margin-bottom:10px;
+  background:var(--soil-dark);
+}
+.member-card .avatar-fallback{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.4rem;color:var(--gold);
+  margin-left:auto;margin-right:auto;
+}
+.member-card .mc-name{font-weight:600;font-size:0.98rem;}
+.member-card .mc-id{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--gold);margin:2px 0 8px;}
+.member-card .mc-meta{color:var(--muted);font-size:0.8rem;line-height:1.5;}
+.result-count{color:var(--muted);font-size:0.85rem;margin:14px 0 0;font-family:'IBM Plex Mono',monospace;}
+
+/* ---- NEW: personnel / events grids (homepage) ---- */
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;margin-top:18px;}
+.people-card{text-align:center;}
+.people-card img,.people-card .avatar-fallback{
+  width:88px;height:88px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);margin-bottom:10px;background:var(--soil-dark);
+}
+.people-card .avatar-fallback{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;color:var(--gold);margin-left:auto;margin-right:auto;}
+.people-card .p-name{font-weight:600;}
+.people-card .p-role{color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;margin:2px 0 6px;}
+.people-card .p-bio{color:var(--muted);font-size:0.82rem;}
+
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px;}
+.event-card{background:var(--wash);border:1px solid var(--line);overflow:hidden;}
+.event-card img{width:100%;height:130px;object-fit:cover;display:block;}
+.event-card .ec-body{padding:14px 16px;}
+.event-card .ec-date{color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;}
+.event-card h3{font-size:1rem;margin:4px 0 6px;}
+.event-card .ec-loc{color:var(--muted);font-size:0.82rem;}
+
+/* ---- NEW: welfare impact bars (homepage) ---- */
+.welfare-impact{margin-top:18px;}
+.impact-total{
+  font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);
+}
+.impact-sub{color:var(--muted);font-size:0.85rem;}
+
+/* ---- NEW: wellbeing mood picker ---- */
+.mood-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.mood-btn{
+  flex:1;min-width:90px;
+  background:rgba(232,238,242,0.05);
+  border:1px solid var(--line);
+  color:var(--ink);
+  padding:14px 8px;
+  text-align:center;
+  cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  margin:0;
+}
+.mood-btn .mood-emoji{display:block;font-size:1.5rem;margin-bottom:4px;}
+.mood-btn.selected{border-color:var(--gold);background:rgba(201,123,61,0.15);color:var(--gold);}
+
+/* ---- NEW: account dashboard ---- */
+.profile-head{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.profile-head img,.profile-head .avatar-fallback{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--soil-dark);
+}
+.profile-head .avatar-fallback{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.8rem;color:var(--gold);}
+.kv-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:0.9rem;}
+.kv-row span:first-child{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;}
+
 @media(max-width:640px){
   header.site{flex-wrap:wrap;}
   header.site nav{margin-left:0;gap:12px;}
   .hero h1{font-size:1.7rem;}
 }
+
 </style>
 </head>
 <body>
@@ -349,6 +431,7 @@ footer{
     <a href="register.html">Register</a>
     <a href="search.html">Find a member</a>
     <a href="welfare.html">Welfare</a>
+    <a href="account.html" id="navAccount">My account</a>
   </nav>
 </header>
 
@@ -389,13 +472,14 @@ footer{
 
 <footer>Chuka Luhya Community · Send to 0118665120</footer>
 
+
 <script>
-// ⚠️ REPLACE THIS with your deployed Apps Script Web App URL (ends in /exec)
-const API_URL = "https://script.google.com/macros/s/AKfycbyvl1aG-JSTuhmmTTJpNLwkRlwysgrZUr_CwX7zUoklKrvmtrGiKlcbf3OylCN1RZxS/exec";
+// ✅ Connected to your deployed Apps Script Web App
+const API_URL = "https://script.google.com/macros/s/AKfycbxuk7Vmufs8RKP4Cp_qCGF3o_e87pMwmKGU62JqPO46imD49JYZpYmTN6R3KJ7NF355/exec";
 
 // ⚠️ REPLACE THIS with a direct image URL for your logo (e.g. an Imgur link,
 // a GitHub-hosted image raw URL, or any public image link ending in .png/.jpg)
-const LOGO_URL = "https://lh3.googleusercontent.com/d/1XwN-2GqsNcrvXHtq5Wz5wxiwcrYzxigq";
+const LOGO_URL = "PASTE_YOUR_LOGO_IMAGE_URL_HERE";
 
 // Sets the logo on every page — called automatically below.
 // Stays hidden until a real LOGO_URL is set, so no broken-image icon shows.
@@ -435,72 +519,113 @@ function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+
+function initials(name) {
+  return String(name || '?').trim().split(/\s+/).slice(0,2).map(w => w[0] || '').join('').toUpperCase();
+}
+
+// ---- member session (used by account.html, and to prefill other pages) ----
+function getMemberSession() {
+  const raw = sessionStorage.getItem('clc_member_session');
+  return raw ? JSON.parse(raw) : null;
+}
+function setMemberSession(session) {
+  sessionStorage.setItem('clc_member_session', JSON.stringify(session));
+}
+function clearMemberSession() {
+  sessionStorage.removeItem('clc_member_session');
+}
+
+// Highlights the "My Account" nav link if the member is logged in,
+// and swaps its label/href accordingly. Call after DOM is ready.
+function reflectAccountNav() {
+  const link = document.getElementById('navAccount');
+  if (!link) return;
+  const session = getMemberSession();
+  if (session) {
+    link.textContent = 'My account (' + session.fullName.split(' ')[0] + ')';
+  }
+}
+document.addEventListener('DOMContentLoaded', reflectAccountNav);
+
 </script>
 <script>
-  const typeSelect = document.getElementById('type');
-  const semesterWrap = document.getElementById('semesterWrap');
-  const semesterSelect = document.getElementById('semesterId');
+// Prefill member number if logged in via account.html
+const paySession = getMemberSession();
+if (paySession) document.getElementById('memberId').value = paySession.memberId;
 
-  async function loadSemesters() {
-    const res = await callApi('getSemesters');
+const typeSelect = document.getElementById('type');
+const semesterWrap = document.getElementById('semesterWrap');
+const semesterSelect = document.getElementById('semesterId');
+
+async function loadSemesters() {
+  const res = await callApi('getSemesters');
+  if (res.ok) {
+    semesterSelect.innerHTML = '';
+    res.semesters.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.semesterId; o.textContent = s.name;
+      semesterSelect.appendChild(o);
+    });
+  }
+}
+loadSemesters();
+
+// pre-select semester if arriving via a shared link, e.g. payment.html?semester=SEM-123
+const urlParams = new URLSearchParams(window.location.search);
+const presetSemester = urlParams.get('semester');
+if (presetSemester) { typeSelect.value = 'Subscription'; }
+
+function toggleSemester() {
+  semesterWrap.style.display = typeSelect.value === 'Subscription' ? 'block' : 'none';
+}
+typeSelect.addEventListener('change', toggleSemester);
+toggleSemester();
+
+const form = document.getElementById('payForm');
+const msg = document.getElementById('msg');
+const submitBtn = document.getElementById('submitBtn');
+
+function showMsg(text, ok) {
+  msg.textContent = text;
+  msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+  try {
+    const payload = {
+      memberId: document.getElementById('memberId').value.trim(),
+      type: typeSelect.value,
+      semesterId: typeSelect.value === 'Subscription' ? semesterSelect.value : '',
+      phone: document.getElementById('phone').value.trim(),
+      transactionMessage: document.getElementById('transactionMessage').value.trim()
+    };
+    const res = await callApi('submitPayment', payload);
     if (res.ok) {
-      semesterSelect.innerHTML = '';
-      res.semesters.forEach(s => {
-        const o = document.createElement('option');
-        o.value = s.semesterId; o.textContent = s.name;
-        semesterSelect.appendChild(o);
-      });
+      showMsg(res.message, true);
+      form.reset();
+      if (paySession) document.getElementById('memberId').value = paySession.memberId;
+      toggleSemester();
+    } else {
+      showMsg(res.error || 'Something went wrong.', false);
     }
+  } catch (err) {
+    showMsg('Network error: ' + err.message, false);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit payment';
   }
-  loadSemesters();
+});
 
-  // pre-select semester if arriving via a shared link, e.g. payment.html?semester=SEM-123
-  const urlParams = new URLSearchParams(window.location.search);
-  const presetSemester = urlParams.get('semester');
-  if (presetSemester) { typeSelect.value = 'Subscription'; }
-
-  function toggleSemester() {
-    semesterWrap.style.display = typeSelect.value === 'Subscription' ? 'block' : 'none';
-  }
-  typeSelect.addEventListener('change', toggleSemester);
-  toggleSemester();
-
-  const form = document.getElementById('payForm');
-  const msg = document.getElementById('msg');
-  const submitBtn = document.getElementById('submitBtn');
-
-  function showMsg(text, ok) {
-    msg.textContent = text;
-    msg.className = 'msg show ' + (ok ? 'ok' : 'err');
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting…';
-    try {
-      const payload = {
-        memberId: document.getElementById('memberId').value.trim(),
-        type: typeSelect.value,
-        semesterId: typeSelect.value === 'Subscription' ? semesterSelect.value : '',
-        phone: document.getElementById('phone').value.trim(),
-        transactionMessage: document.getElementById('transactionMessage').value.trim()
-      };
-      const res = await callApi('submitPayment', payload);
-      if (res.ok) {
-        showMsg(res.message, true);
-        form.reset();
-        toggleSemester();
-      } else {
-        showMsg(res.error || 'Something went wrong.', false);
-      }
-    } catch (err) {
-      showMsg('Network error: ' + err.message, false);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit payment';
-    }
-  });
 </script>
 </body>
 </html>
