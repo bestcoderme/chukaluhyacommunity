@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Chuka Luhya Community</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
+  <div class="brand"><strong>Chuka Luhya Community</strong><span>Admin dashboard</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+</header>
+
+<main class="wide">
+
+  <!-- LOGIN -->
+  <div id="loginBox" class="panel" style="max-width:380px;margin:40px auto;">
+    <h2>Admin login</h2>
+    <label>Password</label>
+    <input type="password" id="password" required>
+    <button id="loginBtn">Log in</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <h1>Admin dashboard</h1>
+      <button class="secondary" id="logoutBtn" style="margin-top:0;">Log out</button>
+    </div>
+
+    <div id="statsRow" class="grid-cards" style="margin:20px 0 30px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
+    </div>
+
+    <div class="tabs">
+      <button data-tab="pending" class="active">Pending payments</button>
+      <button data-tab="members">Members</button>
+      <button data-tab="semesters">Semesters &amp; links</button>
+      <button data-tab="welfare">Welfare drives</button>
+    </div>
+
+    <!-- PENDING PAYMENTS -->
+    <div class="tab-panel" id="tab-pending">
+      <div class="panel">
+        <h3>Payments awaiting approval</h3>
+        <table id="pendingTable">
+          <thead><tr><th>Member</th><th>Type</th><th>Amount</th><th>M-Pesa message</th><th>Phone</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p id="pendingEmpty" style="display:none;color:var(--muted);">No pending payments.</p>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="tab-panel" id="tab-members" style="display:none;">
+      <div class="panel">
+        <h3>All members</h3>
+        <input type="text" id="memberFilter" placeholder="Filter by name, number, email, county…" style="margin-bottom:10px;">
+        <table id="membersTable">
+          <thead><tr><th>No.</th><th>Name</th><th>Reg No.</th><th>Course/Year</th><th>County</th><th>Status</th><th>Semester paid</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEMESTERS -->
+    <div class="tab-panel" id="tab-semesters" style="display:none;">
+      <div class="panel">
+        <h3>Create a new semester</h3>
+        <p style="color:var(--muted);">Creating a semester generates a shareable subscription link for KSh 50 dues.</p>
+        <label>Semester name</label>
+        <input type="text" id="newSemesterName" placeholder="e.g. Semester 1 2026">
+        <button id="createSemesterBtn">Create semester &amp; get link</button>
+        <div class="msg" id="semesterMsg"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <h3>Existing semesters</h3>
+        <div id="semestersList"></div>
+      </div>
+    </div>
+
+    <!-- WELFARE -->
+    <div class="tab-panel" id="tab-welfare" style="display:none;">
+      <div class="panel">
+        <h3>Create a welfare drive</h3>
+        <label>Title</label>
+        <input type="text" id="driveTitle" placeholder="e.g. Maize collection for Otieno's family">
+        <label>Product</label>
+        <input type="text" id="driveProduct" placeholder="e.g. Maize">
+        <label>Unit</label>
+        <select id="driveUnit">
+          <option value="kg">kg</option>
+          <option value="litres">litres</option>
+          <option value="pieces">pieces</option>
+          <option value="KSh">KSh (cash)</option>
+          <option value="other">other</option>
+        </select>
+        <button id="createDriveBtn">Create drive &amp; get link</button>
+        <div class="msg" id="driveMsg"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <h3>Existing drives</h3>
+        <div id="drivesAdminList"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;" id="driveReportPanel" style="display:none;">
+        <h3 id="driveReportTitle">Contributions</h3>
+        <table>
+          <thead><tr><th>Member</th><th>Quantity</th><th>Date</th></tr></thead>
+          <tbody id="driveReportBody"></tbody>
+        </table>
+        <p><b>Total: <span id="driveReportTotal"></span></b></p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>Chuka Luhya Community · Admin panel</footer>
+
+<script src="js/config.js"></script>
+<script>
+  let TOKEN = sessionStorage.getItem('clc_admin_token') || '';
+
+  const loginBox = document.getElementById('loginBox');
+  const dashboard = document.getElementById('dashboard');
+  const loginMsg = document.getElementById('loginMsg');
+
+  function showLoginMsg(text) {
+    loginMsg.textContent = text;
+    loginMsg.className = 'msg show err';
+  }
+
+  async function tryEnterDashboard() {
+    if (!TOKEN) return;
+    loginBox.style.display = 'none';
+    dashboard.style.display = 'block';
+    loadStats();
+    loadPending();
+    loadMembers();
+    loadSemesters();
+    loadDrives();
+  }
+  tryEnterDashboard();
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const password = document.getElementById('password').value;
+    const res = await callApi('adminLogin', { password });
+    if (res.ok) {
+      TOKEN = res.token;
+      sessionStorage.setItem('clc_admin_token', TOKEN);
+      tryEnterDashboard();
+    } else {
+      showLoginMsg(res.error || 'Login failed.');
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('clc_admin_token');
+    location.reload();
+  });
+
+  // ---- tabs ----
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+    });
+  });
+
+  // ---- stats ----
+  async function loadStats() {
+    const res = await callApi('adminGetStats', { token: TOKEN });
+    if (!res.ok) return;
+    document.getElementById('statsRow').innerHTML = `
+      <div class="card"><div class="eyebrow">Members</div><h3>${res.memberCount}</h3></div>
+      <div class="card"><div class="eyebrow">Approved payments (KSh)</div><h3>${res.approvedTotal}</h3></div>
+      <div class="card"><div class="eyebrow">Pending review</div><h3>${res.pendingCount}</h3></div>
+    `;
+  }
+
+  // ---- pending payments ----
+  async function loadPending() {
+    const res = await callApi('adminGetPending', { token: TOKEN });
+    const tbody = document.querySelector('#pendingTable tbody');
+    tbody.innerHTML = '';
+    if (!res.ok) return;
+    document.getElementById('pendingEmpty').style.display = res.pending.length ? 'none' : 'block';
+    res.pending.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${p.memberId}</b><br><span style="color:var(--muted);font-size:0.82rem;">${p.memberName}</span></td>
+        <td>${p.type}</td>
+        <td>KSh ${p.amount}</td>
+        <td style="max-width:220px;font-size:0.82rem;">${p.transactionMessage}</td>
+        <td>${p.phone || '—'}</td>
+        <td>${new Date(p.dateSubmitted).toLocaleDateString()}</td>
+        <td>
+          <button data-row="${p.row}" data-decision="approve" class="approveBtn" style="margin:0;padding:7px 12px;font-size:0.8rem;">Approve</button>
+          <button data-row="${p.row}" data-decision="reject" class="rejectBtn secondary" style="margin:0 0 0 4px;padding:7px 12px;font-size:0.8rem;">Reject</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    document.querySelectorAll('.approveBtn, .rejectBtn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        await callApi('adminReviewPayment', { token: TOKEN, row: btn.dataset.row, decision: btn.dataset.decision });
+        loadPending(); loadMembers(); loadStats();
+      });
+    });
+  }
+
+  // ---- members ----
+  let ALL_MEMBERS = [];
+  async function loadMembers() {
+    const res = await callApi('adminGetMembers', { token: TOKEN });
+    if (!res.ok) return;
+    ALL_MEMBERS = res.members;
+    renderMembers(ALL_MEMBERS);
+  }
+  function renderMembers(list) {
+    const tbody = document.querySelector('#membersTable tbody');
+    tbody.innerHTML = list.map(m => `
+      <tr>
+        <td><b>${m.memberId}</b></td>
+        <td>${m.fullName}</td>
+        <td>${m.regNumber}</td>
+        <td>${m.course || 'Graduate'} · ${m.yearOfStudy}</td>
+        <td>${m.county}</td>
+        <td><span class="tag ${m.status === 'Active' ? 'approved' : 'pending'}">${m.status}</span></td>
+        <td>${m.currentSemesterPaid || '—'}</td>
+      </tr>
+    `).join('');
+  }
+  document.getElementById('memberFilter').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    renderMembers(ALL_MEMBERS.filter(m =>
+      [m.memberId, m.fullName, m.email, m.regNumber, m.county].join(' ').toLowerCase().includes(q)
+    ));
+  });
+
+  // ---- semesters ----
+  async function loadSemesters() {
+    const res = await callApi('getSemesters');
+    const list = document.getElementById('semestersList');
+    if (!res.ok || res.semesters.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No semesters yet.</p>'; return; }
+    list.innerHTML = res.semesters.map(s => {
+      const link = location.origin + location.pathname.replace('admin.html','payment.html') + '?semester=' + s.semesterId;
+      return `
+        <div style="margin-bottom:14px;">
+          <b>${s.name}</b>
+          <div class="share-link">
+            <input readonly value="${link}">
+            <button onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  document.getElementById('createSemesterBtn').addEventListener('click', async () => {
+    const name = document.getElementById('newSemesterName').value.trim();
+    if (!name) return;
+    const res = await callApi('adminCreateSemester', { token: TOKEN, name });
+    const msg = document.getElementById('semesterMsg');
+    if (res.ok) {
+      msg.textContent = 'Semester created!'; msg.className = 'msg show ok';
+      document.getElementById('newSemesterName').value = '';
+      loadSemesters();
+    } else {
+      msg.textContent = res.error; msg.className = 'msg show err';
+    }
+  });
+
+  // ---- welfare drives ----
+  async function loadDrives() {
+    const res = await callApi('getWelfareDrives');
+    const list = document.getElementById('drivesAdminList');
+    if (!res.ok || res.drives.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No drives yet.</p>'; return; }
+    list.innerHTML = res.drives.map(d => {
+      const link = location.origin + location.pathname.replace('admin.html','welfare.html') + '?drive=' + d.driveId;
+      return `
+        <div style="margin-bottom:14px;">
+          <b>${d.title}</b> <span style="color:var(--muted);">(${d.product}, ${d.unit})</span>
+          <div class="share-link">
+            <input readonly value="${link}">
+            <button onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
+            <button class="secondary" onclick="viewDriveReport('${d.driveId}','${d.title.replace(/'/g,"")}','${d.unit}')">View report</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  document.getElementById('createDriveBtn').addEventListener('click', async () => {
+    const title = document.getElementById('driveTitle').value.trim();
+    const product = document.getElementById('driveProduct').value.trim();
+    const unit = document.getElementById('driveUnit').value;
+    if (!title || !product) return;
+    const res = await callApi('adminCreateDrive', { token: TOKEN, title, product, unit });
+    const msg = document.getElementById('driveMsg');
+    if (res.ok) {
+      msg.textContent = 'Drive created!'; msg.className = 'msg show ok';
+      document.getElementById('driveTitle').value = '';
+      document.getElementById('driveProduct').value = '';
+      loadDrives();
+    } else {
+      msg.textContent = res.error; msg.className = 'msg show err';
+    }
+  });
+
+  async function viewDriveReport(driveId, title, unit) {
+    const res = await callApi('adminGetDriveReport', { token: TOKEN, driveId });
+    if (!res.ok) return;
+    document.getElementById('driveReportPanel').style.display = 'block';
+    document.getElementById('driveReportTitle').textContent = 'Contributions — ' + title;
+    document.getElementById('driveReportBody').innerHTML = res.rows.map(r => `
+      <tr><td>${r.memberId} — ${r.memberName}</td><td>${r.quantity} ${r.unit}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>
+    `).join('');
+    document.getElementById('driveReportTotal').textContent = res.total + ' ' + unit;
+    document.getElementById('driveReportPanel').scrollIntoView({behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
