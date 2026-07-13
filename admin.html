@@ -9,27 +9,25 @@
    CHUKA LUHYA COMMUNITY — visual identity
    "Engineering blueprint" theme — grid-paper navy background,
    copper accent, spec-sheet numbered sections, mono labels.
-   Variable/selector names are kept from the previous theme so
-   no markup or JS needs to change — only what they resolve to.
    ========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --soil:      #10243E;   /* blueprint navy — brand / header / hero surfaces */
-  --soil-dark: #0B1B2B;   /* deep ink navy — used for high-contrast text on copper */
-  --cream:     #10243E;   /* page background (blueprint navy) */
-  --gold:      #C97B3D;   /* copper — primary accent */
-  --maroon:    #B5672E;   /* darker copper — links, buttons, hover states */
-  --ink:       #E8EEF2;   /* paper — default text color on the dark background */
+  --soil:      #10243E;
+  --soil-dark: #0B1B2B;
+  --cream:     #10243E;
+  --gold:      #C97B3D;
+  --maroon:    #B5672E;
+  --ink:       #E8EEF2;
   --muted:     rgba(232,238,242,0.65);
   --line:      rgba(232,238,242,0.25);
   --blueprint-line: #4C86AE;
   --ok:        #3F8F5F;
   --warn:      #B4453A;
-  --radius:    0px;       /* blueprint style = sharp corners, no rounding */
-  --shadow:    none;      /* thin borders replace drop-shadows */
-  --wash:      rgba(232,238,242,0.04);   /* faint paper wash for card surfaces */
+  --radius:    0px;
+  --shadow:    none;
+  --wash:      rgba(232,238,242,0.04);
   --wash-2:    rgba(232,238,242,0.07);
 }
 
@@ -55,14 +53,12 @@ h1,h2,h3,.display{
 p{margin:0 0 1em 0;}
 a{color:var(--gold);}
 
-/* blueprint divider — dashed tick-mark rule, the signature element */
 .beadline{
   height:2px;
   background-image:repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 10px, transparent 10px, transparent 22px);
   opacity:0.85;
 }
 
-/* ---- layout shells ---- */
 header.site{
   background:rgba(16,36,62,0.92);
   color:var(--ink);
@@ -87,6 +83,7 @@ header.site nav a{
   font-weight:500;
 }
 header.site nav a:hover{color:var(--gold);}
+header.site nav a.hi{color:var(--gold);}
 
 main{max-width:760px;margin:0 auto;padding:40px 20px 80px;}
 main.wide{max-width:1080px;}
@@ -127,7 +124,6 @@ main.wide{max-width:1080px;}
 .card h3{margin:6px 0 6px;font-size:1.15rem;}
 .card p{color:var(--muted);font-size:0.92rem;margin:0;}
 
-/* ---- spec-sheet section headers (numbered, like an engineering doc) ---- */
 .section-head{
   display:flex;
   align-items:baseline;
@@ -144,7 +140,6 @@ main.wide{max-width:1080px;}
 }
 .section-head h2{margin:0;font-size:1.3rem;}
 
-/* ---- forms ---- */
 .panel{
   background:var(--wash);
   border:1px solid var(--line);
@@ -163,7 +158,7 @@ label{
   color:var(--blueprint-line);
 }
 label .opt{font-weight:400;color:var(--muted);font-size:0.75rem;text-transform:none;letter-spacing:0;}
-input[type=text],input[type=email],input[type=number],input[type=tel],input[type=password],select,textarea{
+input[type=text],input[type=email],input[type=number],input[type=tel],input[type=password],input[type=date],select,textarea{
   width:100%;
   padding:11px 12px;
   border:1px solid var(--line);
@@ -199,7 +194,10 @@ button:hover,.btn:hover{filter:brightness(1.1);}
 button:active,.btn:active{transform:translateY(1px);}
 button.secondary,.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--gold);}
 button.secondary:hover,.btn.secondary:hover{background:rgba(201,123,61,0.12);filter:none;}
+button.danger,.btn.danger{background:transparent;color:var(--warn);border:1px solid var(--warn);}
+button.danger:hover{background:rgba(180,69,58,0.12);}
 button:disabled{opacity:0.5;cursor:not-allowed;}
+button.small,.btn.small{padding:7px 12px;font-size:0.72rem;margin:0;}
 
 .fee-box{
   background:rgba(201,123,61,0.08);
@@ -239,7 +237,7 @@ th{
 }
 .tag.pending{color:#D9A441;}
 .tag.approved,.tag.active{color:var(--ok);}
-.tag.rejected{color:var(--warn);}
+.tag.rejected,.tag.inactive{color:var(--warn);}
 
 .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
 .tabs button{
@@ -273,7 +271,6 @@ footer{
   border-top:1px solid var(--line);
 }
 
-/* status badges (used for member/account status, mirrors reference dashboard) */
 .status-badge{
   display:inline-block;
   font-family:'IBM Plex Mono',monospace;
@@ -288,7 +285,6 @@ footer{
 .status-badge.status-active,.status-badge.active{color:var(--ok);}
 .status-badge.status-inactive,.status-badge.inactive{color:var(--warn);}
 
-/* ---- registration stat charts (homepage) ---- */
 .stats-wrap{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -332,11 +328,97 @@ footer{
 }
 .empty-state p{color:var(--muted);margin-top:8px;}
 
+/* ---- NEW: member directory grid (search page) ---- */
+.filter-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+.filter-row > div{flex:1;min-width:160px;}
+.member-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+.member-card{
+  background:var(--wash);
+  border:1px solid var(--line);
+  padding:16px;
+  text-align:center;
+}
+.member-card img,.member-card .avatar-fallback{
+  width:76px;height:76px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--gold);
+  margin-bottom:10px;
+  background:var(--soil-dark);
+}
+.member-card .avatar-fallback{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.4rem;color:var(--gold);
+  margin-left:auto;margin-right:auto;
+}
+.member-card .mc-name{font-weight:600;font-size:0.98rem;}
+.member-card .mc-id{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--gold);margin:2px 0 8px;}
+.member-card .mc-meta{color:var(--muted);font-size:0.8rem;line-height:1.5;}
+.result-count{color:var(--muted);font-size:0.85rem;margin:14px 0 0;font-family:'IBM Plex Mono',monospace;}
+
+/* ---- NEW: personnel / events grids (homepage) ---- */
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;margin-top:18px;}
+.people-card{text-align:center;}
+.people-card img,.people-card .avatar-fallback{
+  width:88px;height:88px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);margin-bottom:10px;background:var(--soil-dark);
+}
+.people-card .avatar-fallback{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;color:var(--gold);margin-left:auto;margin-right:auto;}
+.people-card .p-name{font-weight:600;}
+.people-card .p-role{color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;margin:2px 0 6px;}
+.people-card .p-bio{color:var(--muted);font-size:0.82rem;}
+
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px;}
+.event-card{background:var(--wash);border:1px solid var(--line);overflow:hidden;}
+.event-card img{width:100%;height:130px;object-fit:cover;display:block;}
+.event-card .ec-body{padding:14px 16px;}
+.event-card .ec-date{color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;}
+.event-card h3{font-size:1rem;margin:4px 0 6px;}
+.event-card .ec-loc{color:var(--muted);font-size:0.82rem;}
+
+/* ---- NEW: welfare impact bars (homepage) ---- */
+.welfare-impact{margin-top:18px;}
+.impact-total{
+  font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);
+}
+.impact-sub{color:var(--muted);font-size:0.85rem;}
+
+/* ---- NEW: wellbeing mood picker ---- */
+.mood-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.mood-btn{
+  flex:1;min-width:90px;
+  background:rgba(232,238,242,0.05);
+  border:1px solid var(--line);
+  color:var(--ink);
+  padding:14px 8px;
+  text-align:center;
+  cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  margin:0;
+}
+.mood-btn .mood-emoji{display:block;font-size:1.5rem;margin-bottom:4px;}
+.mood-btn.selected{border-color:var(--gold);background:rgba(201,123,61,0.15);color:var(--gold);}
+
+/* ---- NEW: account dashboard ---- */
+.profile-head{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.profile-head img,.profile-head .avatar-fallback{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--soil-dark);
+}
+.profile-head .avatar-fallback{display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.8rem;color:var(--gold);}
+.kv-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:0.9rem;}
+.kv-row span:first-child{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;}
+
 @media(max-width:640px){
   header.site{flex-wrap:wrap;}
   header.site nav{margin-left:0;gap:12px;}
   .hero h1{font-size:1.7rem;}
 }
+
 </style>
 </head>
 <body>
@@ -354,6 +436,7 @@ footer{
   <!-- LOGIN -->
   <div id="loginBox" class="panel" style="max-width:380px;margin:40px auto;">
     <h2>Admin login</h2>
+    <p style="color:var(--muted);font-size:0.85rem;">Default password is <b>15562</b> unless it's been changed.</p>
     <label>Password</label>
     <input type="password" id="password" required>
     <button id="loginBtn">Log in</button>
@@ -378,6 +461,10 @@ footer{
       <button data-tab="members">Members</button>
       <button data-tab="semesters">Semesters &amp; links</button>
       <button data-tab="welfare">Welfare drives</button>
+      <button data-tab="personnel">Personnel</button>
+      <button data-tab="events">Events</button>
+      <button data-tab="wellbeing">Wellbeing</button>
+      <button data-tab="settings">Settings</button>
     </div>
 
     <!-- PENDING PAYMENTS -->
@@ -396,9 +483,9 @@ footer{
     <div class="tab-panel" id="tab-members" style="display:none;">
       <div class="panel">
         <h3>All members</h3>
-        <input type="text" id="memberFilter" placeholder="Filter by name, number, email, county…" style="margin-bottom:10px;">
+        <input type="text" id="memberFilter" placeholder="Filter by name, number, email, county, hostel…" style="margin-bottom:10px;">
         <table id="membersTable">
-          <thead><tr><th>No.</th><th>Name</th><th>Reg No.</th><th>Course/Year</th><th>County</th><th>Status</th><th>Semester paid</th></tr></thead>
+          <thead><tr><th>No.</th><th>Name</th><th>Reg No.</th><th>Course/Year</th><th>County</th><th>Hostel</th><th>Status</th><th>Semester paid</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -443,7 +530,7 @@ footer{
         <h3>Existing drives</h3>
         <div id="drivesAdminList"></div>
       </div>
-      <div class="panel" style="margin-top:16px;" id="driveReportPanel" style="display:none;">
+      <div class="panel" style="margin-top:16px;display:none;" id="driveReportPanel">
         <h3 id="driveReportTitle">Contributions</h3>
         <table>
           <thead><tr><th>Member</th><th>Quantity</th><th>Date</th></tr></thead>
@@ -453,18 +540,102 @@ footer{
       </div>
     </div>
 
+    <!-- PERSONNEL -->
+    <div class="tab-panel" id="tab-personnel" style="display:none;">
+      <div class="panel">
+        <h3>Add personnel</h3>
+        <label>Full name</label>
+        <input type="text" id="personnelName" placeholder="e.g. Jane Wanjala">
+        <label>Role</label>
+        <input type="text" id="personnelRole" placeholder="e.g. Chairperson">
+        <label>Photo</label>
+        <input type="file" id="personnelImage" accept="image/*">
+        <label>Bio <span class="opt">(optional)</span></label>
+        <textarea id="personnelBio" rows="2"></textarea>
+        <label>Display on</label>
+        <select id="personnelDisplayOn">
+          <option value="Homepage">Homepage</option>
+          <option value="Events">Events</option>
+          <option value="Both">Both</option>
+        </select>
+        <label>Sort order <span class="opt">(lower shows first)</span></label>
+        <input type="number" id="personnelSortOrder" value="0">
+        <button id="addPersonnelBtn">Add personnel</button>
+        <div class="msg" id="personnelMsg"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <h3>Existing personnel</h3>
+        <div id="personnelAdminList"></div>
+      </div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="tab-panel" id="tab-events" style="display:none;">
+      <div class="panel">
+        <h3>Add event</h3>
+        <label>Title</label>
+        <input type="text" id="eventTitle" placeholder="e.g. Cultural Night 2026">
+        <label>Date</label>
+        <input type="date" id="eventDate">
+        <label>Location <span class="opt">(optional)</span></label>
+        <input type="text" id="eventLocation" placeholder="e.g. Chuka University Grounds">
+        <label>Description <span class="opt">(optional)</span></label>
+        <textarea id="eventDescription" rows="2"></textarea>
+        <label>Image <span class="opt">(optional)</span></label>
+        <input type="file" id="eventImage" accept="image/*">
+        <button id="addEventBtn">Add event</button>
+        <div class="msg" id="eventMsg"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <h3>Existing events</h3>
+        <div id="eventsAdminList"></div>
+      </div>
+    </div>
+
+    <!-- WELLBEING -->
+    <div class="tab-panel" id="tab-wellbeing" style="display:none;">
+      <div class="panel">
+        <h3>Weekly wellbeing check-ins</h3>
+        <p style="color:var(--muted);">A weekly email goes out automatically (via the trigger set up in Setup.gs) asking every Active member how they're doing. Responses appear below, most recent first.</p>
+        <button id="sendWellbeingNowBtn" class="secondary">Send check-in email now (all active members)</button>
+        <div class="msg" id="wellbeingSendMsg"></div>
+        <table style="margin-top:20px;">
+          <thead><tr><th>Member</th><th>Mood</th><th>Message</th><th>Date</th></tr></thead>
+          <tbody id="wellbeingTableBody"></tbody>
+        </table>
+        <p id="wellbeingEmpty" style="display:none;color:var(--muted);">No check-in responses yet.</p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-panel" id="tab-settings" style="display:none;">
+      <div class="panel">
+        <h3>Website URL</h3>
+        <p style="color:var(--muted);">Your live website address (e.g. GitHub Pages). Used to build links inside emails — account-update links and weekly wellbeing check-in links.</p>
+        <label>Site URL</label>
+        <input type="text" id="siteUrlInput" placeholder="https://yourname.github.io/clc/">
+        <button id="saveSiteUrlBtn">Save website URL</button>
+        <div class="msg" id="siteUrlMsg"></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <h3>Admin password</h3>
+        <p style="color:var(--muted);">The password defaults to <b>15562</b>. To change it, use the "CLC Admin" menu in the Google Sheet (Set/Reset Admin Password), or edit the <code>ADMIN_PASSWORD</code> Script Property directly in Apps Script &gt; Project Settings.</p>
+      </div>
+    </div>
+
   </div>
 </main>
 
 <footer>Chuka Luhya Community · Admin panel</footer>
 
+
 <script>
-// ⚠️ REPLACE THIS with your deployed Apps Script Web App URL (ends in /exec)
-const API_URL = "https://script.google.com/macros/s/AKfycbyvl1aG-JSTuhmmTTJpNLwkRlwysgrZUr_CwX7zUoklKrvmtrGiKlcbf3OylCN1RZxS/exec";
+// ✅ Connected to your deployed Apps Script Web App
+const API_URL = "https://script.google.com/macros/s/AKfycbxuk7Vmufs8RKP4Cp_qCGF3o_e87pMwmKGU62JqPO46imD49JYZpYmTN6R3KJ7NF355/exec";
 
 // ⚠️ REPLACE THIS with a direct image URL for your logo (e.g. an Imgur link,
 // a GitHub-hosted image raw URL, or any public image link ending in .png/.jpg)
-const LOGO_URL = "https://lh3.googleusercontent.com/d/1XwN-2GqsNcrvXHtq5Wz5wxiwcrYzxigq";
+const LOGO_URL = "PASTE_YOUR_LOGO_IMAGE_URL_HERE";
 
 // Sets the logo on every page — called automatically below.
 // Stays hidden until a real LOGO_URL is set, so no broken-image icon shows.
@@ -504,207 +675,394 @@ function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+
+function initials(name) {
+  return String(name || '?').trim().split(/\s+/).slice(0,2).map(w => w[0] || '').join('').toUpperCase();
+}
+
+// ---- member session (used by account.html, and to prefill other pages) ----
+function getMemberSession() {
+  const raw = sessionStorage.getItem('clc_member_session');
+  return raw ? JSON.parse(raw) : null;
+}
+function setMemberSession(session) {
+  sessionStorage.setItem('clc_member_session', JSON.stringify(session));
+}
+function clearMemberSession() {
+  sessionStorage.removeItem('clc_member_session');
+}
+
+// Highlights the "My Account" nav link if the member is logged in,
+// and swaps its label/href accordingly. Call after DOM is ready.
+function reflectAccountNav() {
+  const link = document.getElementById('navAccount');
+  if (!link) return;
+  const session = getMemberSession();
+  if (session) {
+    link.textContent = 'My account (' + session.fullName.split(' ')[0] + ')';
+  }
+}
+document.addEventListener('DOMContentLoaded', reflectAccountNav);
+
 </script>
 <script>
-  let TOKEN = sessionStorage.getItem('clc_admin_token') || '';
+let TOKEN = sessionStorage.getItem('clc_admin_token') || '';
 
-  const loginBox = document.getElementById('loginBox');
-  const dashboard = document.getElementById('dashboard');
-  const loginMsg = document.getElementById('loginMsg');
+const loginBox = document.getElementById('loginBox');
+const dashboard = document.getElementById('dashboard');
+const loginMsg = document.getElementById('loginMsg');
 
-  function showLoginMsg(text) {
-    loginMsg.textContent = text;
-    loginMsg.className = 'msg show err';
+function showLoginMsg(text) {
+  loginMsg.textContent = text;
+  loginMsg.className = 'msg show err';
+}
+
+async function tryEnterDashboard() {
+  if (!TOKEN) return;
+  loginBox.style.display = 'none';
+  dashboard.style.display = 'block';
+  loadStats();
+  loadPending();
+  loadMembers();
+  loadSemesters();
+  loadDrives();
+  loadPersonnelAdmin();
+  loadEventsAdmin();
+  loadWellbeing();
+  loadSiteUrl();
+}
+tryEnterDashboard();
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const password = document.getElementById('password').value;
+  const res = await callApi('adminLogin', { password });
+  if (res.ok) {
+    TOKEN = res.token;
+    sessionStorage.setItem('clc_admin_token', TOKEN);
+    tryEnterDashboard();
+  } else {
+    showLoginMsg(res.error || 'Login failed.');
   }
+});
 
-  async function tryEnterDashboard() {
-    if (!TOKEN) return;
-    loginBox.style.display = 'none';
-    dashboard.style.display = 'block';
-    loadStats();
-    loadPending();
-    loadMembers();
-    loadSemesters();
-    loadDrives();
-  }
-  tryEnterDashboard();
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('clc_admin_token');
+  location.reload();
+});
 
-  document.getElementById('loginBtn').addEventListener('click', async () => {
-    const password = document.getElementById('password').value;
-    const res = await callApi('adminLogin', { password });
-    if (res.ok) {
-      TOKEN = res.token;
-      sessionStorage.setItem('clc_admin_token', TOKEN);
-      tryEnterDashboard();
-    } else {
-      showLoginMsg(res.error || 'Login failed.');
-    }
+// ---- tabs ----
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
   });
+});
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('clc_admin_token');
-    location.reload();
-  });
+// ---- stats ----
+async function loadStats() {
+  const res = await callApi('adminGetStats', { token: TOKEN });
+  if (!res.ok) return;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="card"><div class="eyebrow">Members</div><h3>${res.memberCount}</h3></div>
+    <div class="card"><div class="eyebrow">Approved payments (KSh)</div><h3>${res.approvedTotal}</h3></div>
+    <div class="card"><div class="eyebrow">Pending review</div><h3>${res.pendingCount}</h3></div>
+  `;
+}
 
-  // ---- tabs ----
-  document.querySelectorAll('.tabs button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
-      document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
-    });
-  });
-
-  // ---- stats ----
-  async function loadStats() {
-    const res = await callApi('adminGetStats', { token: TOKEN });
-    if (!res.ok) return;
-    document.getElementById('statsRow').innerHTML = `
-      <div class="card"><div class="eyebrow">Members</div><h3>${res.memberCount}</h3></div>
-      <div class="card"><div class="eyebrow">Approved payments (KSh)</div><h3>${res.approvedTotal}</h3></div>
-      <div class="card"><div class="eyebrow">Pending review</div><h3>${res.pendingCount}</h3></div>
+// ---- pending payments ----
+async function loadPending() {
+  const res = await callApi('adminGetPending', { token: TOKEN });
+  const tbody = document.querySelector('#pendingTable tbody');
+  tbody.innerHTML = '';
+  if (!res.ok) return;
+  document.getElementById('pendingEmpty').style.display = res.pending.length ? 'none' : 'block';
+  res.pending.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${escapeHtml(p.memberId)}</b><br><span style="color:var(--muted);font-size:0.82rem;">${escapeHtml(p.memberName)}</span></td>
+      <td>${escapeHtml(p.type)}</td>
+      <td>KSh ${p.amount}</td>
+      <td style="max-width:220px;font-size:0.82rem;">${escapeHtml(p.transactionMessage)}</td>
+      <td>${escapeHtml(p.phone || '—')}</td>
+      <td>${new Date(p.dateSubmitted).toLocaleDateString()}</td>
+      <td>
+        <button data-row="${p.row}" data-decision="approve" class="approveBtn small" style="margin:0;">Approve</button>
+        <button data-row="${p.row}" data-decision="reject" class="rejectBtn secondary small" style="margin:0 0 0 4px;">Reject</button>
+      </td>
     `;
-  }
-
-  // ---- pending payments ----
-  async function loadPending() {
-    const res = await callApi('adminGetPending', { token: TOKEN });
-    const tbody = document.querySelector('#pendingTable tbody');
-    tbody.innerHTML = '';
-    if (!res.ok) return;
-    document.getElementById('pendingEmpty').style.display = res.pending.length ? 'none' : 'block';
-    res.pending.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><b>${p.memberId}</b><br><span style="color:var(--muted);font-size:0.82rem;">${p.memberName}</span></td>
-        <td>${p.type}</td>
-        <td>KSh ${p.amount}</td>
-        <td style="max-width:220px;font-size:0.82rem;">${p.transactionMessage}</td>
-        <td>${p.phone || '—'}</td>
-        <td>${new Date(p.dateSubmitted).toLocaleDateString()}</td>
-        <td>
-          <button data-row="${p.row}" data-decision="approve" class="approveBtn" style="margin:0;padding:7px 12px;font-size:0.8rem;">Approve</button>
-          <button data-row="${p.row}" data-decision="reject" class="rejectBtn secondary" style="margin:0 0 0 4px;padding:7px 12px;font-size:0.8rem;">Reject</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('.approveBtn, .rejectBtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      await callApi('adminReviewPayment', { token: TOKEN, row: btn.dataset.row, decision: btn.dataset.decision });
+      loadPending(); loadMembers(); loadStats();
     });
-    document.querySelectorAll('.approveBtn, .rejectBtn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        btn.disabled = true;
-        await callApi('adminReviewPayment', { token: TOKEN, row: btn.dataset.row, decision: btn.dataset.decision });
-        loadPending(); loadMembers(); loadStats();
-      });
-    });
-  }
-
-  // ---- members ----
-  let ALL_MEMBERS = [];
-  async function loadMembers() {
-    const res = await callApi('adminGetMembers', { token: TOKEN });
-    if (!res.ok) return;
-    ALL_MEMBERS = res.members;
-    renderMembers(ALL_MEMBERS);
-  }
-  function renderMembers(list) {
-    const tbody = document.querySelector('#membersTable tbody');
-    tbody.innerHTML = list.map(m => `
-      <tr>
-        <td><b>${m.memberId}</b></td>
-        <td>${m.fullName}</td>
-        <td>${m.regNumber}</td>
-        <td>${m.course || 'Graduate'} · ${m.yearOfStudy}</td>
-        <td>${m.county}</td>
-        <td><span class="tag ${m.status === 'Active' ? 'approved' : 'pending'}">${m.status}</span></td>
-        <td>${m.currentSemesterPaid || '—'}</td>
-      </tr>
-    `).join('');
-  }
-  document.getElementById('memberFilter').addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    renderMembers(ALL_MEMBERS.filter(m =>
-      [m.memberId, m.fullName, m.email, m.regNumber, m.county].join(' ').toLowerCase().includes(q)
-    ));
   });
+}
 
-  // ---- semesters ----
-  async function loadSemesters() {
-    const res = await callApi('getSemesters');
-    const list = document.getElementById('semestersList');
-    if (!res.ok || res.semesters.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No semesters yet.</p>'; return; }
-    list.innerHTML = res.semesters.map(s => {
-      const link = location.origin + location.pathname.replace('admin.html','payment.html') + '?semester=' + s.semesterId;
-      return `
-        <div style="margin-bottom:14px;">
-          <b>${s.name}</b>
-          <div class="share-link">
-            <input readonly value="${link}">
-            <button onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
-          </div>
-        </div>`;
-    }).join('');
-  }
-  document.getElementById('createSemesterBtn').addEventListener('click', async () => {
-    const name = document.getElementById('newSemesterName').value.trim();
-    if (!name) return;
-    const res = await callApi('adminCreateSemester', { token: TOKEN, name });
-    const msg = document.getElementById('semesterMsg');
-    if (res.ok) {
-      msg.textContent = 'Semester created!'; msg.className = 'msg show ok';
-      document.getElementById('newSemesterName').value = '';
-      loadSemesters();
-    } else {
-      msg.textContent = res.error; msg.className = 'msg show err';
-    }
-  });
+// ---- members ----
+let ALL_MEMBERS = [];
+async function loadMembers() {
+  const res = await callApi('adminGetMembers', { token: TOKEN });
+  if (!res.ok) return;
+  ALL_MEMBERS = res.members;
+  renderMembers(ALL_MEMBERS);
+}
+function renderMembers(list) {
+  const tbody = document.querySelector('#membersTable tbody');
+  tbody.innerHTML = list.map(m => `
+    <tr>
+      <td><b>${escapeHtml(m.memberId)}</b></td>
+      <td>${escapeHtml(m.fullName)}</td>
+      <td>${escapeHtml(m.regNumber)}</td>
+      <td>${escapeHtml(m.course || 'Graduate')} · ${escapeHtml(m.yearOfStudy)}</td>
+      <td>${escapeHtml(m.county)}</td>
+      <td>${escapeHtml(m.hostelName || '—')}</td>
+      <td><span class="tag ${m.status === 'Active' ? 'approved' : 'pending'}">${escapeHtml(m.status)}</span></td>
+      <td>${escapeHtml(m.currentSemesterPaid || '—')}</td>
+    </tr>
+  `).join('');
+}
+document.getElementById('memberFilter').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  renderMembers(ALL_MEMBERS.filter(m =>
+    [m.memberId, m.fullName, m.email, m.regNumber, m.county, m.hostelName].join(' ').toLowerCase().includes(q)
+  ));
+});
 
-  // ---- welfare drives ----
-  async function loadDrives() {
-    const res = await callApi('getWelfareDrives');
-    const list = document.getElementById('drivesAdminList');
-    if (!res.ok || res.drives.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No drives yet.</p>'; return; }
-    list.innerHTML = res.drives.map(d => {
-      const link = location.origin + location.pathname.replace('admin.html','welfare.html') + '?drive=' + d.driveId;
-      return `
-        <div style="margin-bottom:14px;">
-          <b>${d.title}</b> <span style="color:var(--muted);">(${d.product}, ${d.unit})</span>
-          <div class="share-link">
-            <input readonly value="${link}">
-            <button onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
-            <button class="secondary" onclick="viewDriveReport('${d.driveId}','${d.title.replace(/'/g,"")}','${d.unit}')">View report</button>
-          </div>
-        </div>`;
-    }).join('');
+// ---- semesters ----
+async function loadSemesters() {
+  const res = await callApi('getSemesters');
+  const list = document.getElementById('semestersList');
+  if (!res.ok || res.semesters.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No semesters yet.</p>'; return; }
+  list.innerHTML = res.semesters.map(s => {
+    const link = location.origin + location.pathname.replace('admin.html','payment.html') + '?semester=' + s.semesterId;
+    return `
+      <div style="margin-bottom:14px;">
+        <b>${escapeHtml(s.name)}</b>
+        <div class="share-link">
+          <input readonly value="${link}">
+          <button class="small" onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+document.getElementById('createSemesterBtn').addEventListener('click', async () => {
+  const name = document.getElementById('newSemesterName').value.trim();
+  if (!name) return;
+  const res = await callApi('adminCreateSemester', { token: TOKEN, name });
+  const msg = document.getElementById('semesterMsg');
+  if (res.ok) {
+    msg.textContent = 'Semester created!'; msg.className = 'msg show ok';
+    document.getElementById('newSemesterName').value = '';
+    loadSemesters();
+  } else {
+    msg.textContent = res.error; msg.className = 'msg show err';
   }
-  document.getElementById('createDriveBtn').addEventListener('click', async () => {
-    const title = document.getElementById('driveTitle').value.trim();
-    const product = document.getElementById('driveProduct').value.trim();
-    const unit = document.getElementById('driveUnit').value;
-    if (!title || !product) return;
-    const res = await callApi('adminCreateDrive', { token: TOKEN, title, product, unit });
-    const msg = document.getElementById('driveMsg');
-    if (res.ok) {
-      msg.textContent = 'Drive created!'; msg.className = 'msg show ok';
-      document.getElementById('driveTitle').value = '';
-      document.getElementById('driveProduct').value = '';
-      loadDrives();
-    } else {
-      msg.textContent = res.error; msg.className = 'msg show err';
-    }
-  });
+});
 
-  async function viewDriveReport(driveId, title, unit) {
-    const res = await callApi('adminGetDriveReport', { token: TOKEN, driveId });
-    if (!res.ok) return;
-    document.getElementById('driveReportPanel').style.display = 'block';
-    document.getElementById('driveReportTitle').textContent = 'Contributions — ' + title;
-    document.getElementById('driveReportBody').innerHTML = res.rows.map(r => `
-      <tr><td>${r.memberId} — ${r.memberName}</td><td>${r.quantity} ${r.unit}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>
-    `).join('');
-    document.getElementById('driveReportTotal').textContent = res.total + ' ' + unit;
-    document.getElementById('driveReportPanel').scrollIntoView({behavior:'smooth'});
+// ---- welfare drives ----
+async function loadDrives() {
+  const res = await callApi('getWelfareDrives');
+  const list = document.getElementById('drivesAdminList');
+  if (!res.ok || res.drives.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No drives yet.</p>'; return; }
+  list.innerHTML = res.drives.map(d => {
+    const link = location.origin + location.pathname.replace('admin.html','welfare.html') + '?drive=' + d.driveId;
+    return `
+      <div style="margin-bottom:14px;">
+        <b>${escapeHtml(d.title)}</b> <span style="color:var(--muted);">(${escapeHtml(d.product)}, ${escapeHtml(d.unit)})</span>
+        <div class="share-link">
+          <input readonly value="${link}">
+          <button class="small" onclick="navigator.clipboard.writeText('${link}')">Copy link</button>
+          <button class="secondary small" onclick="viewDriveReport('${d.driveId}','${escapeHtml(d.title).replace(/'/g,"")}','${escapeHtml(d.unit)}')">View report</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+document.getElementById('createDriveBtn').addEventListener('click', async () => {
+  const title = document.getElementById('driveTitle').value.trim();
+  const product = document.getElementById('driveProduct').value.trim();
+  const unit = document.getElementById('driveUnit').value;
+  if (!title || !product) return;
+  const res = await callApi('adminCreateDrive', { token: TOKEN, title, product, unit });
+  const msg = document.getElementById('driveMsg');
+  if (res.ok) {
+    msg.textContent = 'Drive created!'; msg.className = 'msg show ok';
+    document.getElementById('driveTitle').value = '';
+    document.getElementById('driveProduct').value = '';
+    loadDrives();
+  } else {
+    msg.textContent = res.error; msg.className = 'msg show err';
   }
+});
+
+async function viewDriveReport(driveId, title, unit) {
+  const res = await callApi('adminGetDriveReport', { token: TOKEN, driveId });
+  if (!res.ok) return;
+  document.getElementById('driveReportPanel').style.display = 'block';
+  document.getElementById('driveReportTitle').textContent = 'Contributions — ' + title;
+  document.getElementById('driveReportBody').innerHTML = res.rows.map(r => `
+    <tr><td>${escapeHtml(r.memberId)} — ${escapeHtml(r.memberName)}</td><td>${r.quantity} ${escapeHtml(r.unit)}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>
+  `).join('');
+  document.getElementById('driveReportTotal').textContent = res.total + ' ' + unit;
+  document.getElementById('driveReportPanel').scrollIntoView({behavior:'smooth'});
+}
+
+// ---- personnel ----
+async function loadPersonnelAdmin() {
+  const res = await callApi('adminGetPersonnel', { token: TOKEN });
+  const list = document.getElementById('personnelAdminList');
+  if (!res.ok || res.personnel.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No personnel added yet.</p>'; return; }
+  list.innerHTML = res.personnel.map(p => `
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);">
+      ${p.photoUrl ? `<img src="${p.photoUrl}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">` : `<div class="avatar-fallback" style="width:48px;height:48px;font-size:1rem;">${initials(p.fullName)}</div>`}
+      <div style="flex:1;">
+        <b>${escapeHtml(p.fullName)}</b> — ${escapeHtml(p.role)}
+        <div style="color:var(--muted);font-size:0.8rem;">Shows on: ${escapeHtml(p.displayOn)} · Sort: ${p.sortOrder} · ${p.active ? '<span class="tag active">active</span>' : '<span class="tag inactive">hidden</span>'}</div>
+      </div>
+      <button class="secondary small" onclick="togglePersonnel('${p.personnelId}', ${!p.active})">${p.active ? 'Hide' : 'Show'}</button>
+      <button class="danger small" onclick="deletePersonnel('${p.personnelId}')">Delete</button>
+    </div>
+  `).join('');
+}
+document.getElementById('addPersonnelBtn').addEventListener('click', async () => {
+  const fullName = document.getElementById('personnelName').value.trim();
+  const role = document.getElementById('personnelRole').value.trim();
+  const bio = document.getElementById('personnelBio').value.trim();
+  const displayOn = document.getElementById('personnelDisplayOn').value;
+  const sortOrder = document.getElementById('personnelSortOrder').value;
+  const msg = document.getElementById('personnelMsg');
+  if (!fullName || !role) { msg.textContent = 'Name and role are required.'; msg.className = 'msg show err'; return; }
+
+  const imageFile = document.getElementById('personnelImage').files[0];
+  let imageBase64 = '', imageFileName = '';
+  if (imageFile) { imageBase64 = await fileToBase64(imageFile); imageFileName = imageFile.name; }
+
+  const res = await callApi('adminAddPersonnel', { token: TOKEN, fullName, role, bio, displayOn, sortOrder, imageBase64, imageFileName });
+  if (res.ok) {
+    msg.textContent = 'Personnel added!'; msg.className = 'msg show ok';
+    document.getElementById('personnelName').value = '';
+    document.getElementById('personnelRole').value = '';
+    document.getElementById('personnelBio').value = '';
+    document.getElementById('personnelImage').value = '';
+    loadPersonnelAdmin();
+  } else {
+    msg.textContent = res.error; msg.className = 'msg show err';
+  }
+});
+async function togglePersonnel(personnelId, active) {
+  await callApi('adminSetPersonnelActive', { token: TOKEN, personnelId, active });
+  loadPersonnelAdmin();
+}
+async function deletePersonnel(personnelId) {
+  if (!confirm('Remove this person permanently?')) return;
+  await callApi('adminDeletePersonnel', { token: TOKEN, personnelId });
+  loadPersonnelAdmin();
+}
+
+// ---- events ----
+async function loadEventsAdmin() {
+  const res = await callApi('adminGetEvents', { token: TOKEN });
+  const list = document.getElementById('eventsAdminList');
+  if (!res.ok || res.events.length === 0) { list.innerHTML = '<p style="color:var(--muted);">No events added yet.</p>'; return; }
+  list.innerHTML = res.events.map(e => `
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);">
+      ${e.imageUrl ? `<img src="${e.imageUrl}" style="width:56px;height:56px;object-fit:cover;">` : ''}
+      <div style="flex:1;">
+        <b>${escapeHtml(e.title)}</b>
+        <div style="color:var(--muted);font-size:0.8rem;">${e.eventDate ? new Date(e.eventDate).toLocaleDateString() : ''} ${e.location ? '· ' + escapeHtml(e.location) : ''} · ${e.active ? '<span class="tag active">active</span>' : '<span class="tag inactive">hidden</span>'}</div>
+      </div>
+      <button class="secondary small" onclick="toggleEvent('${e.eventId}', ${!e.active})">${e.active ? 'Hide' : 'Show'}</button>
+      <button class="danger small" onclick="deleteEvent('${e.eventId}')">Delete</button>
+    </div>
+  `).join('');
+}
+document.getElementById('addEventBtn').addEventListener('click', async () => {
+  const title = document.getElementById('eventTitle').value.trim();
+  const eventDate = document.getElementById('eventDate').value;
+  const location_ = document.getElementById('eventLocation').value.trim();
+  const description = document.getElementById('eventDescription').value.trim();
+  const msg = document.getElementById('eventMsg');
+  if (!title || !eventDate) { msg.textContent = 'Title and date are required.'; msg.className = 'msg show err'; return; }
+
+  const imageFile = document.getElementById('eventImage').files[0];
+  let imageBase64 = '', imageFileName = '';
+  if (imageFile) { imageBase64 = await fileToBase64(imageFile); imageFileName = imageFile.name; }
+
+  const res = await callApi('adminAddEvent', { token: TOKEN, title, eventDate, location: location_, description, imageBase64, imageFileName });
+  if (res.ok) {
+    msg.textContent = 'Event added!'; msg.className = 'msg show ok';
+    document.getElementById('eventTitle').value = '';
+    document.getElementById('eventDate').value = '';
+    document.getElementById('eventLocation').value = '';
+    document.getElementById('eventDescription').value = '';
+    document.getElementById('eventImage').value = '';
+    loadEventsAdmin();
+  } else {
+    msg.textContent = res.error; msg.className = 'msg show err';
+  }
+});
+async function toggleEvent(eventId, active) {
+  await callApi('adminSetEventActive', { token: TOKEN, eventId, active });
+  loadEventsAdmin();
+}
+async function deleteEvent(eventId) {
+  if (!confirm('Remove this event permanently?')) return;
+  await callApi('adminDeleteEvent', { token: TOKEN, eventId });
+  loadEventsAdmin();
+}
+
+// ---- wellbeing ----
+async function loadWellbeing() {
+  const res = await callApi('adminGetWellbeingResponses', { token: TOKEN });
+  const tbody = document.getElementById('wellbeingTableBody');
+  if (!res.ok) return;
+  document.getElementById('wellbeingEmpty').style.display = res.responses.length ? 'none' : 'block';
+  tbody.innerHTML = res.responses.map(r => `
+    <tr>
+      <td><b>${escapeHtml(r.memberId)}</b><br><span style="color:var(--muted);font-size:0.8rem;">${escapeHtml(r.memberName)}</span></td>
+      <td>${escapeHtml(r.mood || '—')}</td>
+      <td style="max-width:280px;">${escapeHtml(r.message || '—')}</td>
+      <td>${new Date(r.date).toLocaleDateString()}</td>
+    </tr>
+  `).join('');
+}
+document.getElementById('sendWellbeingNowBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('sendWellbeingNowBtn');
+  const msg = document.getElementById('wellbeingSendMsg');
+  btn.disabled = true;
+  try {
+    const res = await callApi('adminSendWellbeingNow', { token: TOKEN });
+    if (res.ok) { msg.textContent = `Sent to ${res.sent} active member(s).`; msg.className = 'msg show ok'; }
+    else { msg.textContent = res.error; msg.className = 'msg show err'; }
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ---- settings ----
+async function loadSiteUrl() {
+  // No direct getter is exposed by the backend; leave the field blank for
+  // entry/re-entry — adminSetSiteUrl always overwrites, which is safe.
+}
+document.getElementById('saveSiteUrlBtn').addEventListener('click', async () => {
+  const siteUrl = document.getElementById('siteUrlInput').value.trim();
+  const msg = document.getElementById('siteUrlMsg');
+  if (!siteUrl) { msg.textContent = 'Enter a URL first.'; msg.className = 'msg show err'; return; }
+  const res = await callApi('adminSetSiteUrl', { token: TOKEN, siteUrl });
+  if (res.ok) { msg.textContent = res.message; msg.className = 'msg show ok'; }
+  else { msg.textContent = res.error; msg.className = 'msg show err'; }
+});
+
 </script>
 </body>
 </html>
