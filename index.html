@@ -61,17 +61,19 @@ a{color:var(--gold);}
 
 .top-banner{
   text-align:center;
-  padding:18px 20px 0;
-  background:var(--cream);
+  margin-bottom:18px;
 }
 .top-banner img{
-  max-width:260px;
-  width:100%;
-  height:auto;
+  width:180px;
+  height:180px;
+  object-fit:cover;
+  border-radius:50%;
   display:inline-block;
-  border:1px solid var(--line);
+  border:3px solid var(--gold);
   background:var(--ink);
-  padding:6px;
+}
+@media(max-width:640px){
+  .top-banner img{width:140px;height:140px;}
 }
 
 header.site{
@@ -438,10 +440,6 @@ footer{
 </head>
 <body>
 
-<div class="top-banner">
-  <img src="https://drive.google.com/uc?export=view&id=1Q3sbvUPpjbnTJ4YF-xGFbdZElF_77QzT" alt="Chuka Luhya Community">
-</div>
-
 <header class="site">
   <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
   <div class="brand">
@@ -459,6 +457,9 @@ footer{
 </header>
 
 <div class="hero">
+  <div class="top-banner">
+    <img src="https://drive.google.com/uc?export=view&id=1Q3sbvUPpjbnTJ4YF-xGFbdZElF_77QzT" alt="Chuka Luhya Community">
+  </div>
   <p class="eyebrow" style="margin-bottom:8px;">Member Portal</p>
   <h1>Welcome home, mwana.</h1>
   <p>The official membership home for Luhya students at Chuka University — register, pay your dues, support each other's welfare drives, and stay connected as one family, all in one place.</p>
