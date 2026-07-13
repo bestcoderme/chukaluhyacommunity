@@ -121,12 +121,13 @@ a{color:var(--gold);}
   position:relative;
 }
 .card-qr img.qr-img{
-  width:80px;height:80px;
+  width:132px;height:132px;
   background:#fff;
-  padding:6px;
+  padding:8px;
   border:1px solid var(--gold);
   flex-shrink:0;
   display:block;
+  image-rendering:pixelated;
 }
 .card-qr .qr-label{
   font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.05em;
@@ -226,12 +227,26 @@ const member = {
   photo:  qs('photo')
 };
 
-// Builds a QR code image URL that is unique to this member — it encodes
-// this exact card's verification link (full URL, including query params),
-// so every member's QR points only to their own card.
-function buildQrSrc(verifyUrl) {
-  const data = encodeURIComponent(verifyUrl);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&qzone=1&data=${data}`;
+// Builds a QR code image URL that is unique to this member. The QR encodes
+// a *compact* verification link — same page, same member id, but without the
+// long photo URL — because packing too much data into a QR shown at a small
+// size produces modules too fine for a phone camera to resolve. Fewer
+// characters = a lower-density code = easier to scan.
+function buildQrSrc(member) {
+  const compactParams = new URLSearchParams({
+    id:     member.id || '',
+    name:   member.name || '',
+    course: member.course || '',
+    county: member.county || '',
+    status: member.status || '',
+    since:  member.since || ''
+  });
+  const compactUrl = `${window.location.origin}${window.location.pathname}?${compactParams.toString()}`;
+  const data = encodeURIComponent(compactUrl);
+  // size = actual bitmap requested (kept well above display size for crispness),
+  // ecc=M = medium error correction (still scannable if part of the code is obscured),
+  // margin = quiet zone required around the code for scanners to lock on.
+  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=M&margin=10&data=${data}`;
 }
 
 function renderCard() {
@@ -252,9 +267,7 @@ function renderCard() {
     ? '<span class="tag active">Active</span>'
     : '<span class="tag inactive">' + escapeHtml(member.status || 'Pending') + '</span>';
 
-  // Fully-qualified, absolute URL for this specific card — this is what gets encoded.
-  const verifyUrl = window.location.href;
-  const qrSrc = buildQrSrc(verifyUrl);
+  const qrSrc = buildQrSrc(member);
 
   wrap.innerHTML = `
     <div id="cardCapture">
@@ -280,7 +293,8 @@ function renderCard() {
         </div>
       </div>
       <div class="card-qr">
-        <img class="qr-img" src="${qrSrc}" alt="QR code for ${escapeHtml(member.name || 'member')}" crossorigin="anonymous">
+        <img class="qr-img" src="${qrSrc}" alt="QR code for ${escapeHtml(member.name || 'member')}" crossorigin="anonymous"
+          onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'qr-img', style:'display:flex;align-items:center;justify-content:center;font-family:IBM Plex Mono,monospace;font-size:0.65rem;text-align:center;color:#0B1B2B;', textContent:'QR unavailable — use ID below'}))">
         <div>
           <div class="qr-label">Scan to verify</div>
           <div class="qr-id">${escapeHtml(member.id || '—')}</div>
