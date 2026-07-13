@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find a member — Chuka Luhya Community</title>
+<link rel="style.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
+  <div class="brand"><strong>Chuka Luhya Community</strong><span>Member directory</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="payment.html">Pay</a>
+    <a href="welfare.html">Welfare</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Find a member</h1>
+  <p>Search by member number, full name, registration number, or email.</p>
+
+  <div class="panel">
+    <form id="searchForm">
+      <label>Search</label>
+      <input type="text" id="q" placeholder="e.g. CHLU0001 or Jane Wanjala" required>
+      <button type="submit" id="searchBtn">Search</button>
+    </form>
+    <div class="msg" id="msg"></div>
+    <div id="results"></div>
+  </div>
+</main>
+
+<footer>Chuka Luhya Community</footer>
+
+<script src="config.js"></script>
+<script>
+  const form = document.getElementById('searchForm');
+  const msg = document.getElementById('msg');
+  const results = document.getElementById('results');
+  const searchBtn = document.getElementById('searchBtn');
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+  }
+
+  function statusTag(status) {
+    const cls = status === 'Active' ? 'approved' : 'pending';
+    return `<span class="tag ${cls}">${status}</span>`;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    searchBtn.disabled = true;
+    results.innerHTML = '';
+    msg.className = 'msg';
+    try {
+      const res = await callApi('searchMember', { query: document.getElementById('q').value.trim() });
+      if (!res.ok) { showMsg(res.error, false); return; }
+      if (res.results.length === 0) { showMsg('No member found.', false); return; }
+
+      results.innerHTML = res.results.map(m => `
+        <div class="panel" style="margin-top:16px;display:flex;gap:16px;align-items:center;">
+          ${m.imageUrl ? `<img src="${m.imageUrl}" style="width:64px;height:64px;border-radius:8px;object-fit:cover;">` : ''}
+          <div>
+            <div class="member-id" style="font-size:1.1rem;">${m.memberId}</div>
+            <div><b>${m.fullName}</b> ${statusTag(m.status)}</div>
+            <div style="color:var(--muted);font-size:0.88rem;">
+              ${m.regNumber} · ${m.course || 'Graduate'} · ${m.yearOfStudy} · ${m.county}
+              ${m.currentSemesterPaid ? '· Paid up for current semester' : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      showMsg('Network error: ' + err.message, false);
+    } finally {
+      searchBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
