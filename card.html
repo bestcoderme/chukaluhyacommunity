@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Card · Chuka Luhya Community</title>
+<meta name="description" content="Chuka Luhya Community — digital member card">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --soil-dark: #0B1B2B;
+  --cream:     #10243E;
+  --gold:      #C97B3D;
+  --maroon:    #B5672E;
+  --ink:       #E8EEF2;
+  --muted:     rgba(232,238,242,0.65);
+  --line:      rgba(232,238,242,0.25);
+  --blueprint-line: #4C86AE;
+  --ok:        #3F8F5F;
+  --warn:      #B4453A;
+  --wash:      rgba(232,238,242,0.04);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'IBM Plex Sans', sans-serif;
+  background:
+    repeating-linear-gradient(0deg, rgba(76,134,174,0.14) 0px, rgba(76,134,174,0.14) 1px, transparent 1px, transparent 32px),
+    repeating-linear-gradient(90deg, rgba(76,134,174,0.14) 0px, rgba(76,134,174,0.14) 1px, transparent 1px, transparent 32px),
+    var(--cream);
+  color:var(--ink);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:36px 16px 60px;
+}
+a{color:var(--gold);}
+.page-head{text-align:center;margin-bottom:26px;}
+.page-head .eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--blueprint-line);
+}
+.page-head h1{
+  font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin:6px 0 0;font-weight:700;
+}
+
+/* ---- the card itself (this is the shareable/exportable part) ---- */
+#cardCapture{
+  width:100%;
+  max-width:380px;
+  background:linear-gradient(160deg, #14304F 0%, var(--soil-dark) 100%);
+  border:1px solid var(--line);
+  padding:0;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+}
+#cardCapture::before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(76,134,174,0.16) 0px, rgba(76,134,174,0.16) 1px, transparent 1px, transparent 20px),
+    repeating-linear-gradient(90deg, rgba(76,134,174,0.16) 0px, rgba(76,134,174,0.16) 1px, transparent 1px, transparent 20px);
+  pointer-events:none;
+}
+.card-top{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 20px;
+  border-bottom:1px dashed rgba(232,238,242,0.25);
+  position:relative;
+}
+.card-top img.brand-logo{height:30px;width:30px;object-fit:cover;border-radius:50%;border:1px solid var(--gold);background:var(--soil-dark);}
+.card-top .brand-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;}
+.card-top .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--blueprint-line);}
+.card-top .card-status{margin-left:auto;}
+.tag{
+  display:inline-block;padding:3px 10px;font-family:'IBM Plex Mono',monospace;
+  font-size:0.62rem;letter-spacing:0.05em;text-transform:uppercase;font-weight:600;
+  border:1px solid currentColor;
+}
+.tag.active{color:var(--ok);}
+.tag.inactive,.tag.pending{color:var(--warn);}
+
+.card-body{padding:26px 24px 22px;text-align:center;position:relative;}
+.avatar{
+  width:104px;height:104px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--gold);margin:0 auto 14px;display:block;background:var(--soil-dark);
+}
+.avatar-fallback{
+  width:104px;height:104px;border-radius:50%;
+  border:3px solid var(--gold);margin:0 auto 14px;
+  background:var(--soil-dark);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2rem;color:var(--gold);
+}
+.member-name{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:2px;}
+.member-id{
+  font-family:'IBM Plex Mono',monospace;font-size:0.85rem;letter-spacing:0.06em;
+  color:var(--gold);margin-bottom:18px;
+}
+.card-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  text-align:left;
+  border-top:1px dashed rgba(232,238,242,0.25);
+  padding-top:16px;
+}
+.card-grid .kv{padding:6px 4px;}
+.card-grid .kv span{
+  display:block;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;
+  letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;
+}
+.card-grid .kv b{font-size:0.88rem;font-weight:600;}
+
+.card-bottom{
+  border-top:1px dashed rgba(232,238,242,0.25);
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;
+}
+.card-bottom .since{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted);}
+.card-bottom svg{opacity:0.9;}
+
+/* ---- actions below the card (not captured in the image export) ---- */
+.actions{width:100%;max-width:380px;margin-top:22px;display:flex;flex-direction:column;gap:10px;}
+.actions button{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--gold);color:var(--soil-dark);border:none;
+  padding:13px 18px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:0.8rem;
+  letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;
+}
+.actions button.secondary{background:transparent;color:var(--ink);border:1px solid var(--gold);}
+.actions button:hover{filter:brightness(1.08);}
+.share-link{
+  display:flex;gap:8px;align-items:center;background:rgba(232,238,242,0.05);
+  border:1px solid var(--line);padding:10px 12px;margin-top:4px;
+}
+.share-link input{background:transparent;border:none;flex:1;font-size:0.8rem;color:var(--ink);font-family:'IBM Plex Mono',monospace;}
+.share-link button{margin:0;padding:8px 12px;font-size:0.68rem;}
+.toast{
+  margin-top:10px;font-size:0.8rem;color:var(--ok);text-align:center;display:none;
+}
+.toast.show{display:block;}
+.empty-state{
+  max-width:380px;text-align:center;padding:40px 24px;border:1px dashed var(--line);color:var(--muted);
+}
+.empty-state a{display:inline-block;margin-top:14px;}
+footer{
+  margin-top:36px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="eyebrow">Digital Member Card</div>
+  <h1>Chuka Luhya Community</h1>
+</div>
+
+<div id="cardWrap"></div>
+
+<div class="actions" id="actionsWrap" style="display:none;">
+  <button id="shareBtn">Share card</button>
+  <button class="secondary" id="downloadBtn">Download as image</button>
+  <div class="share-link">
+    <input id="shareUrl" readonly>
+    <button id="copyBtn" class="small">Copy</button>
+  </div>
+  <div class="toast" id="toast">Link copied!</div>
+</div>
+
+<footer>Chuka Luhya Community · Member Portal</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const LOGO_URL = "https://drive.google.com/thumbnail?id=1Q3sbvUPpjbnTJ4YF-xGFbdZElF_77QzT&sz=w200";
+
+function qs(name, fallback = '') {
+  const params = new URLSearchParams(window.location.search);
+  const v = params.get(name);
+  return v === null ? fallback : v;
+}
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+function initials(name) {
+  return String(name || '?').trim().split(/\s+/).slice(0,2).map(w => w[0] || '').join('').toUpperCase();
+}
+
+// ---- Read member details from the URL, e.g.:
+// card.html?name=Jane+Wanjala&id=CLC-0142&course=BSc+Computer+Science
+//   &county=Kakamega&hostel=Hostel+D&status=active&since=2024&photo=<url>
+const member = {
+  name:   qs('name'),
+  id:     qs('id'),
+  course: qs('course'),
+  county: qs('county'),
+  hostel: qs('hostel'),
+  status: qs('status', 'active').toLowerCase(),
+  since:  qs('since'),
+  photo:  qs('photo')
+};
+
+function renderCard() {
+  const wrap = document.getElementById('cardWrap');
+
+  if (!member.name && !member.id) {
+    wrap.innerHTML = `
+      <div class="empty-state">
+        <p>No member details were found in this link.</p>
+        <p>Open this page with your member info in the URL, e.g. from <b>My account</b>.</p>
+        <a href="account.html">Go to My account</a>
+      </div>`;
+    document.getElementById('actionsWrap').style.display = 'none';
+    return;
+  }
+
+  const statusTag = member.status === 'active'
+    ? '<span class="tag active">Active</span>'
+    : '<span class="tag inactive">' + escapeHtml(member.status || 'Pending') + '</span>';
+
+  wrap.innerHTML = `
+    <div id="cardCapture">
+      <div class="card-top">
+        <img class="brand-logo" src="${LOGO_URL}" alt="CLC">
+        <div>
+          <div class="brand-name">Chuka Luhya Community</div>
+          <div class="brand-sub">Official Member Card</div>
+        </div>
+        <div class="card-status">${statusTag}</div>
+      </div>
+      <div class="card-body">
+        ${member.photo
+          ? `<img class="avatar" src="${escapeHtml(member.photo)}" alt="${escapeHtml(member.name)}">`
+          : `<div class="avatar-fallback">${initials(member.name)}</div>`}
+        <div class="member-name">${escapeHtml(member.name || 'Member')}</div>
+        <div class="member-id">${escapeHtml(member.id || '—')}</div>
+        <div class="card-grid">
+          <div class="kv"><span>Course</span><b>${escapeHtml(member.course || '—')}</b></div>
+          <div class="kv"><span>Home county</span><b>${escapeHtml(member.county || '—')}</b></div>
+          <div class="kv"><span>Hostel</span><b>${escapeHtml(member.hostel || '—')}</b></div>
+          <div class="kv"><span>Member since</span><b>${escapeHtml(member.since || '—')}</b></div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="since">chukaluhyacommunity · verified member</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z" stroke="#C97B3D" stroke-width="1.6"/></svg>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('actionsWrap').style.display = 'flex';
+  document.getElementById('shareUrl').value = window.location.href;
+}
+
+function showToast(text) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+document.getElementById('shareBtn')?.addEventListener('click', async () => {
+  const url = window.location.href;
+  const title = `${member.name || 'Member'}'s Chuka Luhya Community card`;
+  if (navigator.share) {
+    try { await navigator.share({ title, url }); } catch (e) { /* user cancelled */ }
+  } else {
+    await navigator.clipboard.writeText(url);
+    showToast('Link copied — paste it anywhere!');
+  }
+});
+
+document.getElementById('copyBtn')?.addEventListener('click', async () => {
+  await navigator.clipboard.writeText(window.location.href);
+  showToast('Link copied!');
+});
+
+document.getElementById('downloadBtn')?.addEventListener('click', async () => {
+  const el = document.getElementById('cardCapture');
+  const canvas = await html2canvas(el, { backgroundColor: null, scale: 2, useCORS: true });
+  const link = document.createElement('a');
+  link.download = `${(member.id || 'clc-member')}-card.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+renderCard();
+</script>
+</body>
+</html>
