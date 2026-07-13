@@ -493,6 +493,19 @@ footer{
       <div class="msg" id="dashResetMsg"></div>
     </div>
 
+    <h2 style="margin-top:32px;">My digital member card</h2>
+    <div class="panel">
+      <p style="color:var(--muted);">A shareable card with your photo, member number, course, and county — send it to friends, or use it as your community ID.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="btn" id="viewCardBtn" href="#" target="_blank" rel="noopener">View my card</a>
+        <button class="secondary" id="copyCardBtn">Copy card link</button>
+      </div>
+      <div class="share-link">
+        <input id="cardUrl" readonly>
+      </div>
+      <div class="msg" id="cardMsg"></div>
+    </div>
+
     <h2 style="margin-top:32px;">My payments</h2>
     <div class="panel">
       <table>
@@ -520,9 +533,8 @@ footer{
 // ✅ Connected to your deployed Apps Script Web App
 const API_URL = "https://script.google.com/macros/s/AKfycbxWQEO2NdlxTdnPR2xjc_WkebcL4wRLBTfexYzyvbheIj7q3LtHQpz35TL1J_2cLte5/exec";
 
-// ⚠️ REPLACE THIS with a direct image URL for your logo (e.g. an Imgur link,
-// a GitHub-hosted image raw URL, or any public image link ending in .png/.jpg)
-const LOGO_URL = "PASTE_YOUR_LOGO_IMAGE_URL_HERE";
+// ✅ Chuka Luhya Community logo
+const LOGO_URL = "https://drive.google.com/thumbnail?id=1Q3sbvUPpjbnTJ4YF-xGFbdZElF_77QzT&sz=w200";
 
 // Sets the logo on every page — called automatically below.
 // Stays hidden until a real LOGO_URL is set, so no broken-image icon shows.
@@ -608,6 +620,22 @@ function showMsgIn(el, text, ok) {
   el.className = 'msg show ' + (ok ? 'ok' : 'err');
 }
 
+// Builds the card.html link for the logged-in member, from their profile (p).
+// card.html reads these same param names straight out of the URL.
+function buildCardUrl(p) {
+  const params = new URLSearchParams({
+    name:   p.fullName || '',
+    id:     p.memberId || '',
+    course: p.course || '',
+    county: p.county || '',
+    hostel: p.hostelName || '',
+    status: (p.status || '').toLowerCase(),
+    since:  p.dateRegistered ? new Date(p.dateRegistered).getFullYear() : '',
+    photo:  p.imageUrl || ''
+  });
+  return `card.html?${params.toString()}`;
+}
+
 async function enterDashboard() {
   const session = getMemberSession();
   if (!session) return;
@@ -642,6 +670,11 @@ async function enterDashboard() {
   document.getElementById('pHostel').textContent = p.hostelName || '—';
   document.getElementById('pSemesterPaid').textContent = p.currentSemesterPaid || '—';
   document.getElementById('pDateRegistered').textContent = p.dateRegistered ? new Date(p.dateRegistered).toLocaleDateString() : '—';
+
+  // ---- digital member card link ----
+  const cardUrl = buildCardUrl(p);
+  document.getElementById('viewCardBtn').href = cardUrl;
+  document.getElementById('cardUrl').value = new URL(cardUrl, window.location.href).href;
 
   const paymentsBody = document.getElementById('paymentsBody');
   document.getElementById('paymentsEmpty').style.display = res.payments.length ? 'none' : 'block';
@@ -700,6 +733,13 @@ document.getElementById('updateDetailsBtn').addEventListener('click', async () =
   if (!session) return;
   const res = await callApi('requestUpdateLink', { identifier: session.memberId });
   showMsgIn(msg, res.ok ? res.message : (res.error || 'Something went wrong.'), res.ok);
+});
+
+document.getElementById('copyCardBtn').addEventListener('click', async () => {
+  const input = document.getElementById('cardUrl');
+  const msg = document.getElementById('cardMsg');
+  await navigator.clipboard.writeText(input.value);
+  showMsgIn(msg, 'Card link copied!', true);
 });
 
 </script>
