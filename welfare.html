@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welfare — Chuka Luhya Community</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
+  <div class="brand"><strong>Chuka Luhya Community</strong><span>Welfare drives</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="payment.html">Pay</a>
+    <a href="search.html">Find a member</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Welfare drives</h1>
+  <p>These are active community collections — like maize for a member in need. Log your contribution below.</p>
+
+  <div class="panel">
+    <form id="welfareForm">
+      <label>Your member number</label>
+      <input type="text" id="memberId" placeholder="e.g. CHLU0001" required>
+
+      <label>Which drive are you contributing to?</label>
+      <select id="driveId" required></select>
+
+      <label>Quantity</label>
+      <input type="number" id="quantity" min="0" step="0.1" required>
+
+      <label>Unit</label>
+      <select id="unit">
+        <option value="kg">kg</option>
+        <option value="litres">litres</option>
+        <option value="pieces">pieces</option>
+        <option value="KSh">KSh (cash)</option>
+        <option value="other">other</option>
+      </select>
+
+      <button type="submit" id="submitBtn">Log contribution</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+
+  <h2 style="margin-top:40px;">Active drives</h2>
+  <div id="drivesList"></div>
+</main>
+
+<footer>Chuka Luhya Community</footer>
+
+<script src="config.js"></script>
+<script>
+  const driveSelect = document.getElementById('driveId');
+  const drivesList = document.getElementById('drivesList');
+
+  async function loadDrives() {
+    const res = await callApi('getWelfareDrives');
+    if (res.ok) {
+      driveSelect.innerHTML = '';
+      if (res.drives.length === 0) {
+        drivesList.innerHTML = '<p style="color:var(--muted);">No active welfare drives right now.</p>';
+      }
+      res.drives.forEach(d => {
+        const o = document.createElement('option');
+        o.value = d.driveId; o.textContent = d.title + ' (' + d.product + ')';
+        driveSelect.appendChild(o);
+      });
+      drivesList.innerHTML = res.drives.map(d => `
+        <div class="card" style="margin-bottom:12px;">
+          <div class="eyebrow">${d.product}</div>
+          <h3>${d.title}</h3>
+          <p>Contribute in ${d.unit}</p>
+        </div>
+      `).join('');
+    }
+  }
+  loadDrives();
+
+  // arriving via a shared link, e.g. welfare.html?drive=DRV-123
+  const urlParams = new URLSearchParams(window.location.search);
+  const presetDrive = urlParams.get('drive');
+
+  const form = document.getElementById('welfareForm');
+  const msg = document.getElementById('msg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    try {
+      const payload = {
+        memberId: document.getElementById('memberId').value.trim(),
+        driveId: driveSelect.value,
+        quantity: document.getElementById('quantity').value,
+        unit: document.getElementById('unit').value
+      };
+      const res = await callApi('submitWelfare', payload);
+      if (res.ok) { showMsg(res.message, true); form.reset(); }
+      else { showMsg(res.error || 'Something went wrong.', false); }
+    } catch (err) {
+      showMsg('Network error: ' + err.message, false);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  // preselect drive once options are loaded
+  const observer = setInterval(() => {
+    if (presetDrive && driveSelect.querySelector(`option[value="${presetDrive}"]`)) {
+      driveSelect.value = presetDrive;
+      clearInterval(observer);
+    } else if (!presetDrive) {
+      clearInterval(observer);
+    }
+  }, 300);
+</script>
+</body>
+</html>
