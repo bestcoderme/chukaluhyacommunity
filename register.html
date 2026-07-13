@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — Chuka Luhya Community</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
+  <div class="brand"><strong>Chuka Luhya Community</strong><span>Member registration</span></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="payment.html">Pay</a>
+    <a href="search.html">Find a member</a>
+    <a href="welfare.html">Welfare</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Register as a member</h1>
+  <p>Fill in your details below. Registration is a one-time KSh 120 fee — you'll pay it on the next step.</p>
+
+  <div class="panel">
+    <form id="regForm">
+      <label>Full name</label>
+      <input type="text" id="fullName" required>
+
+      <label>Email</label>
+      <input type="email" id="email" required>
+
+      <label>Registration number</label>
+      <input type="text" id="regNumber" placeholder="e.g. CH123/0456/2023" required>
+
+      <label>Your photo</label>
+      <input type="file" id="image" accept="image/*">
+
+      <label>Course <span class="opt">(optional — leave blank if you're a graduate)</span></label>
+      <input type="text" id="course" list="courseList" placeholder="e.g. BSc Computer Science">
+      <datalist id="courseList"></datalist>
+
+      <label>Year of study</label>
+      <select id="yearOfStudy" required>
+        <option value="">Select…</option>
+        <option>Year 1</option>
+        <option>Year 2</option>
+        <option>Year 3</option>
+        <option>Year 4</option>
+        <option>Year 5</option>
+        <option>Graduate</option>
+      </select>
+
+      <label>Semester</label>
+      <select id="semester" required>
+        <option value="">Select…</option>
+        <option>Semester 1</option>
+        <option>Semester 2</option>
+        <option>Semester 3</option>
+      </select>
+
+      <label>County (home county)</label>
+      <select id="county" required>
+        <option value="">Select…</option>
+      </select>
+
+      <div class="fee-box">Registration fee: <b>KSh 120</b> — payable to <b>0118665120</b> on the next step, after you submit this form.</div>
+
+      <button type="submit" id="submitBtn">Register</button>
+      <div class="msg" id="msg"></div>
+    </form>
+
+    <div id="successBox" style="display:none;text-align:center;">
+      <h2>You're registered 🎉</h2>
+      <p>Your member number is:</p>
+      <div class="member-id" id="memberIdOut"></div>
+      <p>Save this number — you'll use it to pay, get searched, and join welfare drives.</p>
+      <a class="btn" href="payment.html">Continue to payment →</a>
+    </div>
+  </div>
+</main>
+
+<footer>Chuka Luhya Community · Registration KSh 120 · Send to 0118665120</footer>
+
+<script src="config.js"></script>
+<script>
+  const countySelect = document.getElementById('county');
+  COUNTIES.forEach(c => {
+    const o = document.createElement('option'); o.textContent = c; countySelect.appendChild(o);
+  });
+
+  const yearSelect = document.getElementById('yearOfStudy');
+  const courseInput = document.getElementById('course');
+  yearSelect.addEventListener('change', () => {
+    if (yearSelect.value === 'Graduate') {
+      courseInput.value = '';
+      courseInput.disabled = true;
+      courseInput.placeholder = 'Not required for graduates';
+    } else {
+      courseInput.disabled = false;
+      courseInput.placeholder = 'e.g. BSc Computer Science';
+    }
+  });
+
+  const form = document.getElementById('regForm');
+  const msg = document.getElementById('msg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = 'msg show ' + (ok ? 'ok' : 'err');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    try {
+      const imageFile = document.getElementById('image').files[0];
+      let imageBase64 = '', imageFileName = '';
+      if (imageFile) {
+        imageBase64 = await fileToBase64(imageFile);
+        imageFileName = imageFile.name;
+      }
+
+      const payload = {
+        fullName: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        regNumber: document.getElementById('regNumber').value.trim(),
+        course: courseInput.value.trim(),
+        yearOfStudy: yearSelect.value,
+        semester: document.getElementById('semester').value,
+        county: countySelect.value,
+        imageBase64, imageFileName
+      };
+
+      const res = await callApi('register', payload);
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('successBox').style.display = 'block';
+        document.getElementById('memberIdOut').textContent = res.memberId;
+      } else {
+        showMsg(res.error || 'Something went wrong.', false);
+      }
+    } catch (err) {
+      showMsg('Network error: ' + err.message, false);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Register';
+    }
+  });
+</script>
+</body>
+</html>
