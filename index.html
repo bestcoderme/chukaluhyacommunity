@@ -59,6 +59,21 @@ a{color:var(--gold);}
   opacity:0.85;
 }
 
+.top-banner{
+  text-align:center;
+  padding:18px 20px 0;
+  background:var(--cream);
+}
+.top-banner img{
+  max-width:260px;
+  width:100%;
+  height:auto;
+  display:inline-block;
+  border:1px solid var(--line);
+  background:var(--ink);
+  padding:6px;
+}
+
 header.site{
   background:rgba(16,36,62,0.92);
   color:var(--ink);
@@ -423,6 +438,10 @@ footer{
 </head>
 <body>
 
+<div class="top-banner">
+  <img src="https://drive.google.com/uc?export=view&id=1Q3sbvUPpjbnTJ4YF-xGFbdZElF_77QzT" alt="Chuka Luhya Community">
+</div>
+
 <header class="site">
   <img class="logo" id="siteLogo" alt="CLC logo" style="display:none;">
   <div class="brand">
@@ -514,21 +533,6 @@ footer{
 <main class="wide">
   <div class="section-head">
     <span class="sheet-no">03</span>
-    <h2>Welfare impact</h2>
-  </div>
-  <p>What the community has raised together, drive by drive.</p>
-  <div class="panel">
-    <div class="impact-total" id="welfareTotalContributors">—</div>
-    <div class="impact-sub">members have contributed to at least one welfare drive</div>
-    <div class="welfare-impact" id="welfareBars"><div class="chart-loading">Loading…</div></div>
-  </div>
-</main>
-
-<div class="beadline"></div>
-
-<main class="wide">
-  <div class="section-head">
-    <span class="sheet-no">04</span>
     <h2>Our team</h2>
   </div>
   <p>The people behind the Chuka Luhya Community.</p>
@@ -539,10 +543,25 @@ footer{
 
 <main class="wide">
   <div class="section-head">
-    <span class="sheet-no">05</span>
+    <span class="sheet-no">04</span>
     <h2>Upcoming events</h2>
   </div>
   <div class="event-grid" id="eventsGrid"><div class="chart-loading">Loading…</div></div>
+</main>
+
+<div class="beadline"></div>
+
+<main class="wide">
+  <div class="section-head">
+    <span class="sheet-no">05</span>
+    <h2>Welfare impact</h2>
+  </div>
+  <p>What the community has raised together, drive by drive.</p>
+  <div class="panel">
+    <div class="impact-total" id="welfareTotalContributors">—</div>
+    <div class="impact-sub">members have contributed to at least one welfare drive</div>
+    <div class="welfare-impact" id="welfareBars"><div class="chart-loading">Loading…</div></div>
+  </div>
 </main>
 
 <footer>Chuka Luhya Community · Registration KSh 120 · Subscription KSh 50/semester · Send to 0118665120</footer>
